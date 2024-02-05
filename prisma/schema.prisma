@@ -25,6 +25,7 @@ model Auction {
   createdAt               DateTime         @default(now())
   updatedAt               DateTime         @updatedAt
   auctionDate             DateTime         @default(now())
+  status                  Status           @default(ACTIVE)
   authorId                Int
   author                  User             @relation(fields: [authorId], references: [id])
   auctionLot              AuctionLot[]
@@ -35,6 +36,12 @@ model Auction {
   AuctionDetails          AuctionDetails[]
 
   @@map("auctions")
+}
+
+enum Status {
+  ACTIVE
+  ENDED
+  CANCELLED
 }
 
 model AuctionDetails {
