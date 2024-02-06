@@ -28,7 +28,7 @@ const LoginForm: React.FC = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password }), // Include password in the request body
+            body: JSON.stringify({ username, password })
         });
 
         if (response.ok) {

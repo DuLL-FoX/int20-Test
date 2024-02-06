@@ -34,7 +34,14 @@ export async function POST(req: NextRequest) {
             return createResponse(user, 201);
         }
 
-        return createResponse(user, 200);
+        else if (user.password === password) {
+            return createResponse(user, 200);
+        }
+
+        else {
+            return createResponse({ error: 'Invalid password.' }, 400);
+        }
+
     } catch (err) {
         console.error(err);
         return createResponse({ error: 'An error occurred while processing your request.' }, 500);
