@@ -24,15 +24,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uk">
-      <body className={`${inter.className} min-w-[400px]  h-screen`}>
+      <body className={`${inter.className} min-w-[400px] h-screen`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <main className="flex h-fit ">
+          <main className="flex h-full ">
             <Sidebar />
-            <div className="flex flex-col justify-between items-center h-full m-auto">
+            <div className="flex flex-col justify-between items-center h-full m-auto p-5">
               {children}
               <Footer />
             </div>
