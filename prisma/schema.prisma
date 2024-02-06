@@ -10,6 +10,7 @@ datasource db {
 model User {
   id         Int          @id @default(autoincrement())
   username   String       @unique
+  password   String
   auction    Auction[]
   auctionLot AuctionLot[]
   auctionBid AuctionBid[]
@@ -17,49 +18,63 @@ model User {
   @@map("users")
 }
 
+
 model Auction {
-  id                      Int              @id @default(autoincrement())
-  slug                    String           @unique
+  id                      Int           @id @default(autoincrement())
+  slug                    String        @unique
   title                   String
   briefDescription        String
-  createdAt               DateTime         @default(now())
-  updatedAt               DateTime         @updatedAt
-  auctionDate             DateTime         @default(now())
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+  auctionDate             DateTime      @default(now())
+  auctionLotLogoUrl       String        @default("")
+  status                  AuctionStatus @default(ACTIVE)
   authorId                Int
-  author                  User             @relation(fields: [authorId], references: [id])
-  auctionLot              AuctionLot[]
-  chat                    ChatSession      @relation(fields: [chatId], references: [id])
+  author                  User          @relation(fields: [authorId], references: [id])
+  auctionLots             AuctionLot[]
   chatId                  Int
-  contactPoint            ContactPoint     @relation(fields: [contactPointContactName], references: [contactName])
   contactPointContactName String
-  AuctionDetails          AuctionDetails[]
+  chat                    ChatSession   @relation(fields: [chatId], references: [id])
+  contactPoint            ContactPoint  @relation(fields: [contactPointContactName], references: [contactName])
 
   @@map("auctions")
 }
 
-model AuctionDetails {
-  id          Int     @id @default(autoincrement())
-  description String
-  auctionId   Int
-  auction     Auction @relation(fields: [auctionId], references: [id])
-
-  @@map("auction_details")
+enum AuctionStatus {
+  ACTIVE
+  ENDED
+  CANCELLED
 }
 
+// Uncleare what this model is for we have description in the Auction model
+// model AuctionDetails {
+//   id          Int     @id @default(autoincrement())
+//   description String
+//   auctionId   Int
+//   auction     Auction @relation(fields: [auctionId], references: [id])
+//
+//   @@map("auction_details")
+// }
+
 model AuctionLot {
-  id               Int        @id @default(autoincrement())
-  slug             String     @unique
+  id               Int          @id @default(autoincrement())
+  slug             String       @unique
   objectClassifier String
   startPrice       Int
   lotLogoUrl       String?
-  auction          Auction    @relation(fields: [auctionId], references: [id])
-  user             User       @relation(fields: [userId], references: [id])
-  auctionBid       AuctionBid @relation(fields: [auctionBidUserId], references: [userId])
-  auctionId        Int        @unique
-  userId           Int        @unique
-  auctionBidUserId Int
+  auctionId        Int
+  userId           Int
+  auction          Auction      @relation(fields: [auctionId], references: [id])
+  user             User         @relation(fields: [userId], references: [id])
+  auctionBids      AuctionBid[]
 
   @@map("auction_lot")
+}
+
+enum AuctionLotStatus {
+  ACTIVE
+  SOLD
+  UNSOLD
 }
 
 model ContactPoint {
@@ -72,23 +87,21 @@ model ContactPoint {
 }
 
 model AuctionBid {
-  id         Int          @unique
-  lotId      Int          @unique
-  userId     Int          @unique
-  user       User         @relation(fields: [userId], references: [id])
-  bidAmount  Int
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  AuctionLot AuctionLot[]
+  id        Int        @id @default(autoincrement())
+  lotId     Int
+  userId    Int
+  bidAmount Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  lot       AuctionLot @relation(fields: [lotId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
 
-  @@id([id, userId, lotId])
   @@map("auction_bid")
 }
 
 model ChatSession {
   id        Int       @id @default(autoincrement())
   auctionId Int
-  sessionId Int
   message   Message[]
   createdAt DateTime  @default(now())
   Auction   Auction[]
