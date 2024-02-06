@@ -9,37 +9,33 @@ import {
   PhoneCall,
   SquareUserRound,
 } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
+import SidebarList from "./SidebarList";
 
-const items = [
+const sidebarItems = [
   {
     icon: <Home size={20} />,
-    text: "Домашня",
-    active: true,
+    label: "Домашня",
     alert: false,
-    href: "/",
+    link: "/",
   },
   {
     icon: <Activity size={20} />,
-    text: "Аукціони",
-    active: false,
+    label: "Аукціони",
     alert: true,
-    href: "/",
+    link: "/auction",
   },
   {
     icon: <PhoneCall size={20} />,
-    text: "Контакти",
-    active: false,
+    label: "Контакти",
     alert: false,
-    href: "/",
+    link: "/contacts",
   },
   {
     icon: <Settings size={20} />,
-    text: "Налаштування",
-    active: false,
+    label: "Налаштування",
     alert: false,
-    href: "/",
+    link: "/settings",
   },
 ];
 
@@ -72,39 +68,7 @@ export default function Sidebar() {
             {expanded ? <ChevronFirst /> : <ChevronLast />}
           </button>
         </div>
-        <ul className="flex-1 px-3">
-          {items.map((item) => (
-            <Link
-              key={item.text}
-              href={item.href}
-              className={`relative flex justify-center items-center 
-              py-2 px-3 my-1 font-medium 
-              rounded-md cursor-pointer transition-colors group
-              ${
-                item.active
-                  ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
-                  : "hover:bg-indigo-50 text-gray-600"
-              }`}
-            >
-              {item.icon}
-
-              <span
-                className={`overflow-hidden transition-all ${
-                  expanded ? "w-52 ml-3" : "w-0"
-                }`}
-              >
-                {item.text}
-              </span>
-              {item.alert && (
-                <div
-                  className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
-                    expanded ? "" : "top-2"
-                  }`}
-                />
-              )}
-            </Link>
-          ))}
-        </ul>
+        <SidebarList sidebarItems={sidebarItems} expanded={expanded} />
         <div
           className={`flex justify-center items-center p-2 border-t leading-4`}
         >
