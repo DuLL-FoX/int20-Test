@@ -47,7 +47,7 @@ export async function generateMetadata({
   };
 }
 
-export async function AuctionDetails({ params: { slug } }: PageProps) {
+export default async function AuctionDetails({ params: { slug } }: PageProps) {
   
   const auction = await getAuction(slug);
   const contact = await getContact(auction.contactPointContactName);
