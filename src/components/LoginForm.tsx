@@ -5,9 +5,9 @@ import Cookies from 'js-cookie';
 
 const LoginForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>(''); // Add password state
     const [users, setUsers] = useState<string[]>([]);
     const [selectedUser, setSelectedUser] = useState<string | null>(null);
-
 
     useEffect(() => {
         const storedUsers = Cookies.get('users');
@@ -20,7 +20,6 @@ const LoginForm: React.FC = () => {
         }
     }, []);
 
-
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -29,7 +28,7 @@ const LoginForm: React.FC = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username }),
+            body: JSON.stringify({ username, password }), // Include password in the request body
         });
 
         if (response.ok) {
@@ -50,7 +49,6 @@ const LoginForm: React.FC = () => {
         Cookies.set('selectedUser', username, { expires: 7 });
     };
 
-
     return (
         <div>
             {users.length > 0 && (
@@ -70,11 +68,21 @@ const LoginForm: React.FC = () => {
                 <div>
                     <label htmlFor="username">Username</label>
                     <input
-                        type="username"
+                        type="text"
                         id="username"
                         name="username"
                         required
                         onChange={(e) => setUsername(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label htmlFor="password">Password</label> {/* Add password field */}
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
                 <button type="submit" className="w-full">
