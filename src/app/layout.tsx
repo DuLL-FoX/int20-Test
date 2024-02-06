@@ -3,16 +3,17 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import Sidebar from "@/components/sidebar/Sidebar";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "Skills&Work",
-    template: "%s | Skills&Work",
+    default: "Аукціон",
+    template: "%s | Аукціон",
   },
   icons: {
-    icon: '/icon.svg',
+    icon: "/icon.svg",
   },
 };
 
@@ -24,13 +25,19 @@ export default function RootLayout({
   return (
     <html lang="uk">
       <body className={`${inter.className} min-w-[400px]  h-screen`}>
-        <main className="flex h-fit ">
-          <Sidebar />
-          <div className="flex flex-col justify-between items-center h-full m-auto">
-            {children}
-            <Footer />
-          </div>
-        </main>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          disableTransitionOnChange
+        >
+          <main className="flex h-fit ">
+            <Sidebar />
+            <div className="flex flex-col justify-between items-center h-full m-auto">
+              {children}
+              <Footer />
+            </div>
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

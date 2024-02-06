@@ -1,6 +1,6 @@
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { ReactElement } from "react";
 
 type SidebarItem = {
   label: string;
@@ -12,16 +12,19 @@ type SidebarItem = {
 type SidebarGroupProps = {
   sidebarItems: SidebarItem[];
   expanded: boolean;
+  theme: string | undefined;
 };
 
 export default function SidebarList({
   sidebarItems,
   expanded,
+  theme,
 }: SidebarGroupProps) {
   const pathName = usePathname();
+
   return (
     <ul className="flex-1 px-3">
-      {sidebarItems.map((item) => (
+      {sidebarItems.map((item: SidebarItem) => (
         <Link
           key={item.label}
           href={item.link}
@@ -29,10 +32,15 @@ export default function SidebarList({
         py-2 px-3 my-1 font-medium 
         rounded-md cursor-pointer transition-colors group
         ${
-          pathName === item.link
+          pathName === item.link || pathName.startsWith(`${item.link}/`)
             ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
             : "hover:bg-indigo-50 text-gray-600"
-        }`}
+        }
+        ${
+          theme === "dark" &&
+          "text-indigo-100 from-indigo-700 to-indigo-600 hover:bg-indigo-500"
+        }
+        `}
         >
           {item.icon}
           <span

@@ -18,26 +18,25 @@ model User {
 }
 
 model Auction {
-  id                      Int              @id @default(autoincrement())
-  slug                    String           @unique
+  id                      Int           @id @default(autoincrement())
+  slug                    String        @unique
   title                   String
   briefDescription        String
-  createdAt               DateTime         @default(now())
-  updatedAt               DateTime         @updatedAt
-  auctionDate             DateTime         @default(now())
-  auctionLotLogoUrl       String           @default("")
-  status                  AuctionStatus    @default(ACTIVE)
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+  auctionDate             DateTime      @default(now())
+  auctionLotLogoUrl       String        @default("")
+  status                  AuctionStatus @default(ACTIVE)
   authorId                Int
-  author                  User             @relation(fields: [authorId], references: [id])
+  author                  User          @relation(fields: [authorId], references: [id])
   auctionLots             AuctionLot[]
   chatId                  Int
   contactPointContactName String
-  chat                    ChatSession      @relation(fields: [chatId], references: [id])
-  contactPoint            ContactPoint     @relation(fields: [contactPointContactName], references: [contactName])
+  chat                    ChatSession   @relation(fields: [chatId], references: [id])
+  contactPoint            ContactPoint  @relation(fields: [contactPointContactName], references: [contactName])
 
   @@map("auctions")
 }
-
 
 enum AuctionStatus {
   ACTIVE
@@ -70,7 +69,6 @@ model AuctionLot {
   @@map("auction_lot")
 }
 
-
 enum AuctionLotStatus {
   ACTIVE
   SOLD
@@ -87,18 +85,17 @@ model ContactPoint {
 }
 
 model AuctionBid {
-  id        Int       @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   lotId     Int
   userId    Int
   bidAmount Int
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   lot       AuctionLot @relation(fields: [lotId], references: [id])
-  user      User      @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
 
   @@map("auction_bid")
 }
-
 
 model ChatSession {
   id        Int       @id @default(autoincrement())
