@@ -33,8 +33,8 @@ export default function SidebarList({
         rounded-md cursor-pointer transition-colors group
         ${
           pathName === item.link || pathName.startsWith(`${item.link}/`)
-            ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
-            : "hover:bg-indigo-50 text-gray-600"
+            ? "bg-gradient-to-tr from-indigo-200 to-indigo-100"
+            : "hover:bg-indigo-50 text-gray-600 "
         }
         ${
           theme === "dark" &&
