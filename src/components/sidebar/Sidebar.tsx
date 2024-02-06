@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import SidebarList from "./SidebarList";
+import { ThemeButton } from "@/components/theme/ThemeButton";
+import { useTheme } from "next-themes";
+import Image from "next/image";
 
 const sidebarItems = [
   {
@@ -41,7 +44,7 @@ const sidebarItems = [
 
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
-
+  const { theme } = useTheme();
   return (
     <aside className="h-screen">
       <nav
@@ -54,21 +57,39 @@ export default function Sidebar() {
             expanded ? "space-x-2" : ""
           }`}
         >
-          <img
+          <Image
             src="https://img.logoipsum.com/288.svg"
             alt="App logo"
+            width={32}
+            height={10}
             className={`overflow-hidden transition-all ${
               expanded ? "w-32" : "w-0"
             }`}
           />
           <button
             onClick={() => setExpanded((curr) => !curr)}
-            className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200"
+            className={`p-2 rounded-lg bg-gray-100 hover:bg-gray-200
+                      ${theme === "dark" ? "bg-gray-600 hover:bg-gray-700" : ""}
+            `}
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
           </button>
         </div>
-        <SidebarList sidebarItems={sidebarItems} expanded={expanded} />
+        <SidebarList
+          sidebarItems={sidebarItems}
+          expanded={expanded}
+          theme={theme}
+        />
+        <div className="flex justify-between m-2 space-x-2">
+          <span
+            className={`flex items-center w-fit justify-center  ${
+              !expanded && "hidden"
+            }`}
+          >
+            Змінити тему
+          </span>
+          <ThemeButton />
+        </div>
         <div
           className={`flex justify-center items-center p-2 border-t leading-4`}
         >
