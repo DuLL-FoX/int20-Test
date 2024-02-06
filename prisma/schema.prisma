@@ -10,12 +10,14 @@ datasource db {
 model User {
   id         Int          @id @default(autoincrement())
   username   String       @unique
+  password   String
   auction    Auction[]
   auctionLot AuctionLot[]
   auctionBid AuctionBid[]
 
   @@map("users")
 }
+
 
 model Auction {
   id                      Int           @id @default(autoincrement())

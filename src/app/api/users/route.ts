@@ -12,7 +12,11 @@ const createResponse = (data: any, status: number) => {
 
 export async function POST(req: NextRequest) {
     try {
-        const { username } = await req.json();
+        const { username, password } = await req.json();
+
+        if (!password) {
+            return createResponse({ error: 'Password is required.' }, 400);
+        }
 
         let user = await db.user.findUnique({
             where: {
@@ -24,12 +28,20 @@ export async function POST(req: NextRequest) {
             user = await db.user.create({
                 data: {
                     username: username,
+                    password: password, // add password to user data
                 },
             });
             return createResponse(user, 201);
         }
 
-        return createResponse(user, 200);
+        else if (user.password === password) {
+            return createResponse(user, 200);
+        }
+
+        else {
+            return createResponse({ error: 'Invalid password.' }, 400);
+        }
+
     } catch (err) {
         console.error(err);
         return createResponse({ error: 'An error occurred while processing your request.' }, 500);

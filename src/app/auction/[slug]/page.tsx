@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import AuctionDetailsPage from "@/components/auction/AuctionDetailsPage";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { usePathname  } from 'next/navigation';
 
 interface PageProps {
   params: { slug: string };
@@ -46,7 +48,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function page({ params: { slug } }: PageProps) {
+export async function page({ params: { slug } }: PageProps) {
   const auction = await getAuction(slug);
   const contact = await getContact(
     auction.contactPointContactName
@@ -82,4 +84,20 @@ export default async function page({ params: { slug } }: PageProps) {
       </aside>
     </main>
   );
+
+
+export function Page() {
+  
+    const pathname = usePathname()
+
+    // receive last part of the path
+    const slug = pathname.split('/').pop();
+
+    return (
+        <div>
+            <Link href={"/lots/" + "new/"}>
+                <Button>Створити новий лот</Button>
+            </Link>
+        </div>
+    );
 }

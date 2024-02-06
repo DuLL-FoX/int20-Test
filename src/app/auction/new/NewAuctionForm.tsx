@@ -1,7 +1,7 @@
 "use client";
 import H1 from "@/components/ui/h1";
 import { useForm } from "react-hook-form";
-import { createAuctionValues, createAuctionSchema } from "@/lib/validation";
+import { createAuctionValues, createAuctionSchema } from "@/lib/Auction/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import RichTextEditor from "@/components/RichTextEditor";
 import { draftToMarkdown } from "markdown-draft-js";
 import LoadingButton from "@/components/LoadingButton";
-import { createAuctionPosting } from "./actions";
+import { createAuctionPosting } from "@/app/api/auction/new/route";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
