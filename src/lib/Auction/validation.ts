@@ -1,11 +1,7 @@
 import { z } from "zod";
-import { statusAuc } from "../auction-types";
 
 const requiredString = z.string().min(1, "Обов'язкове поле");
-const numericRequiredString = requiredString.regex(
-  /^\d+$/,
-  "Повинно бути числом"
-);
+
 
 const auctionLogoSchema = z
   .custom<File | undefined>()

@@ -6,7 +6,6 @@ import { toSlug } from "@/lib/utils";
 import { put } from "@vercel/blob";
 import path from "path";
 import { db } from "@/lib/db";
-import { redirect } from "next/navigation";
 
 export async function createLotPosting(formData: FormData) {
   const values = Object.fromEntries(formData.entries());
@@ -39,11 +38,11 @@ export async function createLotPosting(formData: FormData) {
         data: {
           lotSlug: slug,
           objectClassifier: trimmedObjectClassifier,
-          startPrice,
+          startPrice:  parseFloat(startPrice),
           lotLogoUrl,
           naming,
-          auctionId: 11,
-          userId: 1,
+          auctionId: 1,
+          userId: 11,
         },
       });
     });

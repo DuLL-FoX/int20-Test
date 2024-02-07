@@ -50,7 +50,7 @@ model AuctionLot {
   lotSlug          String           @unique
   naming           String
   objectClassifier String
-  startPrice       Int
+  startPrice       Float
   lotLogoUrl       String
   auctionId        Int
   userId           Int

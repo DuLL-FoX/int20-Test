@@ -1,9 +1,9 @@
 "use client";
 
 import { AuctionLot } from "@prisma/client";
-import { Briefcase, Clock, MapPin, Phone } from "lucide-react";
+import { Banknote, Briefcase, Clock, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatMoney } from "@/lib/utils";
 import logoPlaceholder from "@/assets/building-2.svg";
 import { useTheme } from "next-themes";
 
@@ -26,7 +26,7 @@ export default function AuctionListItem({
   return (
     <article className="flex md:min-h-full gap-3 rounded-xl border p-4 hover:bg-muted/60">
       <Image
-        src={lotLogoUrl || logoPlaceholder}
+        src={logoPlaceholder}
         alt={`${naming}-${objectClassifier} logo`}
         className="rounded-lg self-center"
         height={50}
@@ -44,8 +44,8 @@ export default function AuctionListItem({
             {lotStatus}
           </p>
           <p className="flex items-center gap-2">
-            <Phone size={16} className="shrink-0" />
-            {startPrice}
+            <Banknote size={16} className="shrink-0" />
+            {formatMoney(startPrice)}
           </p>
           <p className="flex items-center gap-2 md:hidden">
             <Clock size={16} className="shrink-0" />
