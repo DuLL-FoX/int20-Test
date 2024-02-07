@@ -14,7 +14,7 @@ export default async function Auction() {
       <Link href={"/auction/new"}>
         <Button>Створити новий аукціон</Button>
       </Link>
-      <div className="grid grid-cols-4 gap-4 max-md:grid-cols-1 place-content-start">
+      <div className="grid gap-4 lg:grid-cols-3 max-md:grid-cols-1 place-content-start">
         {data.map((data: Auction) => (
           <Link key={data.id} href={`/auction/${data.slug}`} className="block">
             <AuctionListItem auction={data} />

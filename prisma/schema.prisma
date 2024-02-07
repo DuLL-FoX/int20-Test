@@ -18,7 +18,6 @@ model User {
   @@map("users")
 }
 
-
 model Auction {
   id                      Int           @id @default(autoincrement())
   slug                    String        @unique
@@ -26,7 +25,7 @@ model Auction {
   briefDescription        String
   createdAt               DateTime      @default(now())
   updatedAt               DateTime      @updatedAt
-  auctionDate             DateTime      @default(now())
+  auctionDate             DateTime
   auctionLotLogoUrl       String        @default("")
   status                  AuctionStatus @default(ACTIVE)
   authorId                Int
@@ -46,27 +45,20 @@ enum AuctionStatus {
   CANCELLED
 }
 
-// Uncleare what this model is for we have description in the Auction model
-// model AuctionDetails {
-//   id          Int     @id @default(autoincrement())
-//   description String
-//   auctionId   Int
-//   auction     Auction @relation(fields: [auctionId], references: [id])
-//
-//   @@map("auction_details")
-// }
-
 model AuctionLot {
-  id               Int          @id @default(autoincrement())
-  slug             String       @unique
+  id               Int              @id @default(autoincrement())
+  lotSlug          String           @unique
+  naming           String
   objectClassifier String
   startPrice       Int
-  lotLogoUrl       String?
+  lotLogoUrl       String
   auctionId        Int
   userId           Int
-  auction          Auction      @relation(fields: [auctionId], references: [id])
-  user             User         @relation(fields: [userId], references: [id])
+  auction          Auction          @relation(fields: [auctionId], references: [id])
+  user             User             @relation(fields: [userId], references: [id])
   auctionBids      AuctionBid[]
+  createdAt        DateTime         @default(now())
+  lotStatus        AuctionLotStatus @default(ACTIVE)
 
   @@map("auction_lot")
 }

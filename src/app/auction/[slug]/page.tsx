@@ -5,14 +5,13 @@ import { Metadata } from "next";
 import AuctionDetailsPage from "@/components/auction/AuctionDetailsPage";
 import { Button } from "@/components/ui/button";
 
-
 interface PageProps {
   params: { slug: string };
 }
 
 const getAuction = cache(async (slug: string) => {
   const auction = await db.auction.findUnique({
-    where: { slug },
+    where: { slug: slug },
   });
 
   if (!auction) notFound();
@@ -47,8 +46,7 @@ export async function generateMetadata({
   };
 }
 
-export async function AuctionDetails({ params: { slug } }: PageProps) {
-  
+export default async function AuctionDetails({ params: { slug } }: PageProps) {
   const auction = await getAuction(slug);
   const contact = await getContact(auction.contactPointContactName);
 
