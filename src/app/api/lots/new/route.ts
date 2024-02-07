@@ -23,7 +23,7 @@ export async function createLotPosting(formData: FormData) {
 
   if (lotLogo instanceof File) {
     const blob = await put(
-      `auction_logos/${slug}${path.extname(lotLogo.name)}`,
+      `auctionLots_logos/${slug}${path.extname(lotLogo.name)}`,
       lotLogo,
       {
         access: "public",

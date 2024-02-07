@@ -1,81 +1,56 @@
-import { FC } from "react";
-import { cache } from "react";
-import { db } from "@/lib/db";
-import { notFound } from "next/navigation";
-import { Metadata } from "next";
-import LotDetailsPage from "@/components/lot/LotDetails";
 import { Button } from "@/components/ui/button";
+import { AuctionLot } from "@prisma/client";
+import Link from "next/link";
+import LotListItem from "@/components/lot/LotListItem";
+import { useRouter } from "next/router";
+import useSWR from "swr";
 
 interface PageProps {
-    params: { lotSlug: string };
+  params: { slug: string };
 }
 
-const getLots = cache(async (lotSlug: string) => {
-    const lot = await db.auctionLot.findUnique({
-      where: { lotSlug: lotSlug },
-    });
-  
-    if (!lot) notFound();
-    return lot;
-  });
-  
-  const getContact = cache(async (contactName: string) => {
-    const contact = await db.contactPoint.findUnique({
-      where: { contactName: contactName },
-    });
-  
-    if (!contact) notFound();
-    return contact;
-  });
-  
-  export async function generateStaticParams() {
-    const lots = await db.auctionLot.findMany({
-      where: { lotStatus: "ACTIVE" },
-      select: { lotSlug: true },
-    });
-  
-    return lots.map(({ lotSlug }) => lotSlug);
+const fetcher = async (url: string) => {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw new Error('Failed to fetch data');
   }
-  
-  export async function generateMetadata({
-    params: { lotSlug },
-  }: PageProps): Promise<Metadata> {
-    const lot = await getLots(lotSlug);
-  
-    return {
-      title: lot.naming,
-    };
-  }
+};
 
-export default async function LotDetailsPage({ params: { lotSlug } }: PageProps) {
-  const lot = await getLots(lotSlug);
 
-}
+export default function Auction({ params: { slug } }: PageProps) {
+  const { data, error } = useSWR(`/api/lots/${slug}`, fetcher);
+  const { asPath } = useRouter();
+
+  if (error) return <div>Error loading lots...</div>;
+  if (!data) return <div>Loading...</div>;
 
   return (
-    <main className="flex flex-col px-4 max-w-7xl m-auto my-10 md:flex-row items-center gap-5 md:items-start">
-      <lotDetailsPage lot={lot} contact={contact} />
-      <aside className="flex flex-col items-center space-y-5">
-        <div className="flex flex-col items-center">
-          <Button asChild>
-            <a href={applicationLink} className="w-40 md:w-fit">
-              Написати на email
-            </a>
-          </Button>
-          <p className="flex items-center text-muted-foreground text-sm font-medium">
-            {contactEmail}
+    <div className="flex flex-col space-y-5 items-end">
+      <Link href={"/auction/new"}>
+        <Button>Створити новий аукціон</Button>
+      </Link>
+      <div className="grid gap-4 lg:grid-cols-3 max-md:grid-cols-1 place-content-start">
+        {data.map((auctionLot: AuctionLot) => (
+          <Link
+            key={auctionLot.id}
+            href={`${asPath}/lots/${auctionLot.lotSlug}`}
+            className="block"
+          >
+            <LotListItem auctionLot={auctionLot} />
+          </Link>
+        ))}
+        {data.length === 0 && (
+          <p className="text-center m-auto">
+            There is no data found. Try adjusting your search filters.
           </p>
-        </div>
-        <div className="hidden md:flex shrink-0 items-end justify-center">
-          <p className="border px-2 rounded py-1 bg-muted text-muted-foreground text-sm font-medium">
-            {lot.status === "ACTIVE"
-              ? "Активний"
-              : lot.status === "ENDED"
-              ? "Закінчиний"
-              : "Відмінений"}
-          </p>
-        </div>
-      </aside>
-    </main>
+        )}
+      </div>
+    </div>
   );
 }

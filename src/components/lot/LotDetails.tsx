@@ -2,7 +2,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export function LotDetails() {
+export default function LotDetails() {
   const pathname = usePathname();
 
   // receive last part of the path
