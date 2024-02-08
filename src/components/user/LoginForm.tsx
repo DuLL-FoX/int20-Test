@@ -16,12 +16,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
 
-const userSchema = z.object({
-  email: z.string().min(1,'Email is required').email('Invalid email'),
-  username: z.string().min(1,'Email is required').max(30),
-  password: z.string().min(1,'Password is required').min(8),
-});
-
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
