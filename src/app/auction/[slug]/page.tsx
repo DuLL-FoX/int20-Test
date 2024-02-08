@@ -58,9 +58,7 @@ export async function generateMetadata({
   };
 }
 
-
 export default async function AuctionDetails({ params: { slug } }: PageProps) {
-
   const auction = await getAuction(slug);
   const lots = await getLots(slug);
   const contact = await getContact(auction.contactPointContactName);
