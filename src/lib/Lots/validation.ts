@@ -14,7 +14,7 @@ const lotLogoSchema = z
 
 export const createLotSchema = z.object({
   objectClassifier: requiredString.max(50),
-  startPrice: z.number().min(0),
+  startPrice: requiredString.min(0),
   lotLogo: lotLogoSchema,
   naming: requiredString.max(100),
 });
@@ -24,4 +24,5 @@ export type createLotValues = z.infer<typeof createLotSchema>;
 export const lotFilterSchema = z.object({
   q: z.string().optional(),
   status: z.string().optional(),
+  startingPrice: z.number().optional(),
 });
