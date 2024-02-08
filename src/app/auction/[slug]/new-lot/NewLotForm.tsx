@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/LoadingButton";
-import { createLotPosting } from "@/app/api/lots/new/route";
+import { СreateLotPosting } from "@/app/api/lots/new/СreateLot";
 
-export default function NewJobForm() {
+export default function NewLotForm() {
   const form = useForm<createLotValues>({
     resolver: zodResolver(createLotSchema),
   });
@@ -34,7 +34,7 @@ export default function NewJobForm() {
     });
 
     try {
-      await createLotPosting(formData);
+      await СreateLotPosting(formData);
     } catch (error) {
       alert(error);
     }
