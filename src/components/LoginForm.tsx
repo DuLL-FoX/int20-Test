@@ -5,19 +5,13 @@ import Cookies from 'js-cookie';
 
 const LoginForm: React.FC = () => {
     const [username, setUsername] = useState<string>('');
-    const [password, setPassword] = useState<string>(''); // Add password state
+    const [password, setPassword] = useState<string>('');
     const [users, setUsers] = useState<string[]>([]);
     const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
     useEffect(() => {
-        const storedUsers = Cookies.get('users');
-        const storedSelectedUser = Cookies.get('selectedUser');
-        if (storedUsers) {
-            setUsers(JSON.parse(storedUsers));
-        }
-        if (storedSelectedUser) {
-            setSelectedUser(storedSelectedUser);
-        }
+        setUsers(JSON.parse(Cookies.get('users') || '[]'));
+        setSelectedUser(Cookies.get('selectedUser') || null);
     }, []);
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -25,22 +19,17 @@ const LoginForm: React.FC = () => {
 
         const response = await fetch('http://localhost:3000/api/users', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
         });
 
-        if (response.ok) {
-            const newUser = await response.json();
-            console.log(newUser);
+        const data = await response.json();
 
-            const updatedUsers = [...users, newUser.username];
-            setUsers(updatedUsers);
-            Cookies.set('users', JSON.stringify(updatedUsers), { expires: 7 });
+        if (response.ok) {
+            setUsers(prevUsers => [...prevUsers, data.username]);
+            Cookies.set('users', JSON.stringify(users), { expires: 7 });
         } else {
-            const error = await response.json();
-            console.error(error);
+            console.error(data);
         }
     };
 

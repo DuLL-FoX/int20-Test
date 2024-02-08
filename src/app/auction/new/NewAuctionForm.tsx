@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import RichTextEditor from "@/components/RichTextEditor";
 import { draftToMarkdown } from "markdown-draft-js";
 import LoadingButton from "@/components/LoadingButton";
-import { createAuctionPosting } from "@/app/api/auction/new/route";
+import { createAuctionPosting } from "@/app/api/auction/new/CreateAuction";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
