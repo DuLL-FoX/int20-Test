@@ -8,7 +8,7 @@ import path from "path";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 
-export async function createAuctionPosting(formData: FormData) {
+export async function СreateAuctionPosting(formData: FormData) {
     const values = Object.fromEntries(formData.entries());
 
     const {

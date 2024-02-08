@@ -9,11 +9,13 @@ import {
   PhoneCall,
   SquareUserRound,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SidebarList from "./SidebarList";
 import { ThemeButton } from "@/components/theme/ThemeButton";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import Cookies from "js-cookie";
+import { Button } from "../ui/button";
 
 const sidebarItems = [
   {
@@ -45,6 +47,15 @@ const sidebarItems = [
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const { theme } = useTheme();
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedSelectedUser = Cookies.get("selectedUser");
+    if (storedSelectedUser) {
+      setSelectedUser(storedSelectedUser);
+    }
+  }, [selectedUser]);
+
   return (
     <aside className="h-screen">
       <nav
@@ -104,10 +115,12 @@ export default function Sidebar() {
                 expanded ? "w-52 ml-3" : "w-0"
               }`}
             >
-              <h3 className="font-semibold">Username</h3>
+              <h3 className="font-semibold">{selectedUser}</h3>
               <span className="text-gray-700 text-sm ">Є активні лоти</span>
             </div>
-            <MoreVertical size={20} />
+            <Button onClick={(e) => setSelectedUser("")} size="icon">
+              <MoreVertical size={20} />
+            </Button>
           </div>
         </div>
       </nav>

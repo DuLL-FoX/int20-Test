@@ -1,7 +1,10 @@
 "use client";
 import H1 from "@/components/ui/h1";
 import { useForm } from "react-hook-form";
-import { createAuctionValues, createAuctionSchema } from "@/lib/Auction/validation";
+import {
+  createAuctionValues,
+  createAuctionSchema,
+} from "@/lib/Auction/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -16,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import RichTextEditor from "@/components/RichTextEditor";
 import { draftToMarkdown } from "markdown-draft-js";
 import LoadingButton from "@/components/LoadingButton";
-import { createAuctionPosting } from "@/app/api/auction/new/CreateAuction";
+import { СreateAuctionPosting } from "@/app/api/auction/new/CreateAuction";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -29,7 +32,7 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { uk } from "date-fns/locale";
 
-export default function NewJobForm() {
+export default function NewAuctionForm() {
   const form = useForm<createAuctionValues>({
     resolver: zodResolver(createAuctionSchema),
   });
@@ -50,7 +53,7 @@ export default function NewJobForm() {
     });
 
     try {
-      await createAuctionPosting(formData);
+      await СreateAuctionPosting(formData);
     } catch (error) {
       alert(error);
     }

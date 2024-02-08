@@ -7,7 +7,7 @@ import { put } from "@vercel/blob";
 import path from "path";
 import { db } from "@/lib/db";
 
-export async function createLotPosting(formData: FormData) {
+export async function СreateLotPosting(formData: FormData) {
   const values = Object.fromEntries(formData.entries());
 
   const { objectClassifier, startPrice, lotLogo, naming } =
