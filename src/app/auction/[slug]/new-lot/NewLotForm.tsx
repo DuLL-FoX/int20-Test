@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/LoadingButton";
-import { СreateLotPosting } from "@/app/api/lots/new/СreateLot";
+import { CreateLotPosting } from "@/app/api/lots/new/СreateLot";
 
 export default function NewLotForm() {
   const form = useForm<createLotValues>({
@@ -34,7 +34,7 @@ export default function NewLotForm() {
     });
 
     try {
-      await СreateLotPosting(formData);
+      await CreateLotPosting(formData);
     } catch (error) {
       alert(error);
     }
