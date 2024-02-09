@@ -31,11 +31,14 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { uk } from "date-fns/locale";
+import Cookies from "js-cookie";
 
 export default function NewAuctionForm() {
   const form = useForm<createAuctionValues>({
     resolver: zodResolver(createAuctionSchema),
   });
+
+  const username = Cookies.get("selectedUser");
 
   const onSubmit = async (values: createAuctionValues) => {
     const formData = new FormData();
@@ -53,7 +56,7 @@ export default function NewAuctionForm() {
     });
 
     try {
-      await СreateAuctionPosting(formData);
+      await СreateAuctionPosting(formData, username as string);
     } catch (error) {
       alert(error);
     }

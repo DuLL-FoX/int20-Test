@@ -29,42 +29,28 @@ export default function LotDetails({
 }: LotDetaisProps) {
   return (
     <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild>
+        <div className="cursor-pointer">{children}</div>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-md w-fit">
         <DialogHeader>
-          <DialogTitle>Попередні входи</DialogTitle>
+          <DialogTitle>Деталі лоту</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        {/* <form onSubmit={handleSubmit} className="flex flex-col space-y-2"> */}
         <div className="flex items-center w-full">
           <Label htmlFor="" className="w-full">
-            ЛАЛАЛЕНД {naming}
+            Назва: {naming}
           </Label>
-          <Input
-            type="text"
-            id=""
-            name=""
-            required
-            // onChange={}
-            defaultValue=""
-          />
+         
         </div>
         <div className="flex items-center w-full">
           <Label htmlFor="" className="w-full">
-            БУБУБІБІ {startPrice}
+            Стартова ціна: {startPrice}
           </Label>
-          <Input
-            type=""
-            id=""
-            name=""
-            required
-            // onChange={}
-          />
         </div>
-        <Button type="submit" variant="outline" className="w-full">
+        <Button variant="outline" className="w-full">
           Увійти чи створити користувача
         </Button>
-        {/* </form> */}
       </DialogContent>
     </Dialog>
   );

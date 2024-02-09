@@ -29,8 +29,8 @@ model Auction {
   auctionDate             DateTime
   auctionLotLogoUrl       String        @default("")
   status                  AuctionStatus @default(ACTIVE)
-  authorId                Int
-  author                  User          @relation(fields: [authorId], references: [id])
+  authorName              String        @unique
+  author                  User          @relation(fields: [authorName], references: [username])
   auctionLots             AuctionLot[]
   chatId                  Int
   contactPointContactName String

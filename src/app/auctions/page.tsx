@@ -11,12 +11,12 @@ export default async function Auction() {
 
   return (
     <div className="flex flex-col space-y-5 items-end">
-      <Link href={"/auction/new"}>
+      <Link href={"/auctions/new"}>
         <Button>Створити новий аукціон</Button>
       </Link>
       <div className="grid gap-4 lg:grid-cols-3 max-md:grid-cols-1 place-content-start">
         {data.map((data: Auction) => (
-          <Link key={data.id} href={`/auction/${data.slug}`} className="block">
+          <Link key={data.id} href={`/auctions/${data.slug}`} className="block">
             <AuctionListItem auction={data} />
           </Link>
         ))}
