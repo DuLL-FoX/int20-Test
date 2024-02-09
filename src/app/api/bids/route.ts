@@ -32,7 +32,12 @@ export async function POST(req: NextRequest) {
   const bid = await db.auctionBid.create({
     data: { lotId: lot.id, userId, bidAmount },
   });
-  publishEvent("newBidChannel", bid);
+
+  const user = await db.user.findUnique({ where: { id: userId } });
+  if (!user) return respondWithError("User not found.", 404);
+  const newBid = { ...bid, user: { username: user.username } };
+
+  await publishEvent("newBidChannel", newBid);
 
   return respondWithSuccess(bid, 201);
 }

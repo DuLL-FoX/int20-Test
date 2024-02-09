@@ -7,7 +7,7 @@ export default function TestBids() {
   const [bids, setBids] = useState<any[]>([]);
 
   useEffect(() => {
-    const socket = io("http://192.168.0.180:3001");
+    const socket = io("http://localhost:3001");
 
     fetch("/api/bids?lotId=1")
       .then((response) => response.json())
