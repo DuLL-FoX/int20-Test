@@ -1,9 +1,7 @@
 "use client";
 import {
-  ChevronFirst,
   MoreVertical,
   Settings,
-  ChevronLast,
   Home,
   Activity,
   PhoneCall,
@@ -15,6 +13,8 @@ import { useTheme } from "next-themes";
 import Cookies from "js-cookie";
 import { Button } from "../ui/button";
 import dynamic from "next/dynamic";
+import UserProfile from "../user/profile/Profile";
+import Link from "next/link";
 
 const sidebarItems = [
   {
@@ -27,7 +27,7 @@ const sidebarItems = [
     icon: <Activity size={20} />,
     label: "Аукціони",
     alert: true,
-    link: "/auction",
+    link: "/auctions",
   },
   {
     icon: <PhoneCall size={20} />,
@@ -50,7 +50,7 @@ const SidebarList = dynamic(() => import("./SidebarList"), {
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const { theme } = useTheme();
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<string | null>();
 
   useEffect(() => {
     const storedSelectedUser = Cookies.get("selectedUser");
@@ -74,38 +74,40 @@ export default function Sidebar() {
           theme={theme}
           setExpanded={setExpanded}
         />
+        <Link href={`/my-bids/${selectedUser}`}>Ваші ставки</Link>
         <div className="flex justify-between m-2 space-x-2">
           <span
-            className={`flex items-center w-fit justify-center  ${
+            className={`flex items-center w-full justify-center  ${
               !expanded && "hidden"
             }`}
           >
             Змінити тему
           </span>
-          <ThemeButton />
+
+          <ThemeButton expanded={expanded} />
         </div>
-        <div
-          className={`flex justify-center items-center p-2 border-t leading-4`}
-        >
-          <SquareUserRound size={40} />
+        <UserProfile user={selectedUser as string}>
           <div
-            className={`flex justify-between items-center overflow-hidden transition-all ${
-              expanded ? "w-52 ml-3" : "w-0 border-none hidden"
-            }`}
+            className={`flex justify-center items-center p-2 border-t leading-4`}
           >
+            <SquareUserRound size={40} />
             <div
-              className={`flex flex-col overflow-hidden transition-all ${
-                expanded ? "w-52 ml-3" : "w-0"
+              className={`flex justify-between items-center overflow-hidden transition-all ${
+                expanded ? "w-52 ml-3" : "w-0 border-none hidden"
               }`}
             >
-              <h3 className="font-semibold">{selectedUser}</h3>
-              <span className="text-gray-700 text-sm ">Є активні лоти</span>
+              <div
+                className={`flex flex-col overflow-hidden transition-all ${
+                  expanded ? "w-52 ml-3" : "w-0"
+                }`}
+              >
+                <h3 className="font-semibold">{selectedUser}</h3>
+                <span className="text-gray-700 text-sm ">Є активні лоти</span>
+              </div>
+              <MoreVertical size={30} />
             </div>
-            <Button onClick={(e) => setSelectedUser("")} size="icon">
-              <MoreVertical size={20} />
-            </Button>
           </div>
-        </div>
+        </UserProfile>
       </nav>
     </aside>
   );

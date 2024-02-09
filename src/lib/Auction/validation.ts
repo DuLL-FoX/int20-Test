@@ -2,7 +2,6 @@ import { z } from "zod";
 
 const requiredString = z.string().min(1, "Обов'язкове поле");
 
-
 const auctionLogoSchema = z
   .custom<File | undefined>()
   .refine(
@@ -15,6 +14,7 @@ const auctionLogoSchema = z
 
 export const createAuctionSchema = z.object({
   title: requiredString.max(100),
+  authorName: requiredString.max(30),
   contactPointContactName: requiredString,
   auctionLotLogo: auctionLogoSchema,
   briefDescription: z.string().max(5000),
