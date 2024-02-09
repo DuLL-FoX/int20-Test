@@ -6,9 +6,11 @@ import AuctionDetailsPage from "@/components/auction/AuctionDetailsPage";
 import { Button } from "@/components/ui/button";
 import LotList from "@/components/lot/LotList";
 
+
 interface PageProps {
   params: { slug: string };
 }
+
 
 const getAuction = cache(async (slug: string) => {
   const auction = await db.auction.findUnique({
@@ -60,6 +62,7 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
   const auction = await getAuction(slug);
   const lots = await getLots(slug);
   const contact = await getContact(auction.contactPointContactName);
+
   const { contactEmail } = contact;
   const applicationLink = contactEmail && `mailto:${contactEmail}`;
 
@@ -88,13 +91,13 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
               {auction.status === "ACTIVE"
                 ? "Активний"
                 : auction.status === "ENDED"
-                ? "Закінчено"
-                : "Відмінено"}
+                ? "Закінчиний"
+                : "Відмінений"}
             </p>
           </div>
         </aside>
       </div>
-      <LotList lots={lots} slug={slug} />
+      <LotList lots={lots} slug={slug}/>
     </main>
   );
 }

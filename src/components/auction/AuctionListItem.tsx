@@ -1,8 +1,11 @@
+"use client"
+
 import { Auction } from "@prisma/client";
 import { Briefcase, Clock, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 import logoPlaceholder from "@/assets/building-2.svg";
+import { useTheme } from "next-themes";
 
 type AuctionListItemProps = {
   auction: Auction;
@@ -19,14 +22,16 @@ export default function AuctionListItem({
     contactPointContactName,
   },
 }: AuctionListItemProps) {
+  const { theme } = useTheme();
+
   return (
     <article className="flex md:min-h-full gap-3 rounded-xl border p-4 hover:bg-muted/60">
       <Image
         src={auctionLotLogoUrl || logoPlaceholder}
         alt={`${title} logo`}
-        className="rounded-lg self-center bg-slate-50"
-        height={100}
-        width={100}
+        className="rounded-lg self-center"
+        height={50}
+        width={50}
       />
       <div className="flex-grow space-y-3">
         <div>
@@ -36,11 +41,7 @@ export default function AuctionListItem({
         <div className="text-muted-foreground">
           <p className="flex items-center gap-2 md:hidden">
             <Briefcase size={16} className="shrink-0" />
-            {status === "ACTIVE"
-              ? "Активний"
-              : status === "ENDED"
-              ? "Закінчено"
-              : "Відмінено"}
+            {status}
           </p>
           <p className="flex items-center gap-2">
             <MapPin size={16} className="shrink-0" />

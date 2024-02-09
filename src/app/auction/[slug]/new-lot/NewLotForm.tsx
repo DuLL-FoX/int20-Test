@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/LoadingButton";
 import { CreateLotPosting } from "@/app/api/lots/new/СreateLot";
-import Cookies from "js-cookie";
 
 export default function NewLotForm() {
   const form = useForm<createLotValues>({
@@ -23,8 +22,6 @@ export default function NewLotForm() {
 
   const onSubmit = async (values: createLotValues) => {
     const formData = new FormData();
-
-    const username = Cookies.get("selectedUser");
 
     Object.entries(values).forEach(([key, value]) => {
       if (value) {
@@ -37,7 +34,7 @@ export default function NewLotForm() {
     });
 
     try {
-      await CreateLotPosting(formData, username as string);
+      await CreateLotPosting(formData);
     } catch (error) {
       alert(error);
     }

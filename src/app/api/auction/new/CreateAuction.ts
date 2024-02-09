@@ -8,59 +8,55 @@ import path from "path";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 
-export async function СreateAuctionPosting(
-  formData: FormData,
-  userName: string
-) {
-  const values = Object.fromEntries(formData.entries());
+export async function СreateAuctionPosting(formData: FormData) {
+    const values = Object.fromEntries(formData.entries());
 
-  const {
-    title,
-    contactPointContactName,
-    briefDescription,
-    auctionDate,
-    auctionLotLogo,
-    authorName,
-  } = createAuctionSchema.parse(values);
+    const {
+        title,
+        contactPointContactName,
+        briefDescription,
+        auctionDate,
+        auctionLotLogo,
+    } = createAuctionSchema.parse(values);
 
-  const trimmedTitle = title.trim();
-  const trimmedBriefDescription = briefDescription.trim();
+    const trimmedTitle = title.trim();
+    const trimmedBriefDescription = briefDescription.trim();
 
-  const slug = `${toSlug(trimmedTitle)}-${nanoid(10)}`;
+    const slug = `${toSlug(trimmedTitle)}-${nanoid(10)}`;
 
-  let auctionLotLogoUrl: string | undefined = undefined;
+    let auctionLotLogoUrl: string | undefined = undefined;
 
-  if (auctionLotLogo instanceof File) {
-    const blob = await put(
-      `auction_logos/${slug}${path.extname(auctionLotLogo.name)}`,
-      auctionLotLogo,
-      {
-        access: "public",
-        addRandomSuffix: false,
-      }
-    );
-    auctionLotLogoUrl = blob.url;
-  }
+    if (auctionLotLogo instanceof File) {
+        const blob = await put(
+            `auction_logos/${slug}${path.extname(auctionLotLogo.name)}`,
+            auctionLotLogo,
+            {
+                access: "public",
+                addRandomSuffix: false,
+            }
+        );
+        auctionLotLogoUrl = blob.url;
+    }
 
-  try {
-    await db.$transaction(async (prisma) => {
-      await prisma.auction.create({
-        data: {
-          slug,
-          title: trimmedTitle,
-          auctionLotLogoUrl,
-          briefDescription: trimmedBriefDescription,
-          auctionDate,
-          contactPointContactName,
-          authorName: userName,
-          chatId: 1,
-        },
-      });
-    });
-  } catch (error) {
-    console.error("Error creating auction: ", error);
-    throw error;
-  }
+    try {
+        await db.$transaction(async (prisma) => {
+            await prisma.auction.create({
+                data: {
+                    slug,
+                    title: trimmedTitle,
+                    auctionLotLogoUrl,
+                    briefDescription: trimmedBriefDescription,
+                    auctionDate,
+                    contactPointContactName,
+                    authorId: 11,
+                    chatId: 1,
+                },
+            });
+        });
+    } catch (error) {
+        console.error("Error creating auction: ", error);
+        throw error;
+    }
 
-  redirect("/auctions/auction-submitted");
+    redirect("/auction/auction-submitted");
 }

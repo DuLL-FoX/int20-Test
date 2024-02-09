@@ -5,11 +5,7 @@ import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 
-type ThemeButtonProps = {
-  expanded: boolean;
-};
-
-export function ThemeButton({ expanded }: ThemeButtonProps) {
+export function ThemeButton() {
   const { theme, setTheme } = useTheme();
 
   React.useEffect(() => {
@@ -21,7 +17,7 @@ export function ThemeButton({ expanded }: ThemeButtonProps) {
       variant="outline"
       size="icon"
       onClick={() => setTheme(`${theme === "light" ? "dark" : "light"}`)}
-      className={`${expanded && "w-full"}`}
+      className=""
     >
       <Sun
         size={20}

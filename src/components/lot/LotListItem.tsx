@@ -1,12 +1,11 @@
 "use client";
 
 import { AuctionLot } from "@prisma/client";
-import { Banknote, Briefcase, Clock } from "lucide-react";
+import { Banknote, Briefcase, Clock, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import { formatDate, formatMoney } from "@/lib/utils";
 import logoPlaceholder from "@/assets/building-2.svg";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 
 type LotListItemProps = {
   auctionLot: AuctionLot;
@@ -23,11 +22,6 @@ export default function AuctionListItem({
   },
 }: LotListItemProps) {
   const { theme } = useTheme();
-  const [formattedMoney, setFormattedMoney] = useState("");
-
-  useEffect(() => {
-    setFormattedMoney(formatMoney(startPrice));
-  }, []);
 
   return (
     <article className="flex md:min-h-full gap-3 rounded-xl border p-4 hover:bg-muted/60">
@@ -51,7 +45,7 @@ export default function AuctionListItem({
           </p>
           <p className="flex items-center gap-2">
             <Banknote size={16} className="shrink-0" />
-            {formattedMoney}
+            {formatMoney(startPrice)}
           </p>
           <p className="flex items-center gap-2 md:hidden">
             <Clock size={16} className="shrink-0" />
