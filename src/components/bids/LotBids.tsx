@@ -2,12 +2,23 @@
 
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import Cookies from "js-cookie";
+import { GetUserBids } from "@/app/api/bids/UserBids/UserBids";
+
 
 export default function TestBids() {
   const [bids, setBids] = useState<any[]>([]);
+  const [selectedUser, setSelectedUser] = useState<string | null>();
+
+
 
   useEffect(() => {
-    const socket = io("http://192.168.0.180:3001");
+    const socket = io("http://localhost:3001");
+    const storedSelectedUser = Cookies.get("selectedUser");
+
+    if (storedSelectedUser) {
+      setSelectedUser(storedSelectedUser);
+    }
 
     fetch("/api/bids?lotId=1")
       .then((response) => response.json())

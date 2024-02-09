@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import NewAuctionForm from "@/app/auction/new/NewAuctionForm";
+import NewAuctionForm from "@/app/auctions/new/NewAuctionForm";
 
 export const metadata: Metadata = {
   title: "Опублікувати новий аукціон",
