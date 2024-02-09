@@ -14,7 +14,7 @@ export default function LotList({ lots, slug }: LotListProps) {
     <div className="flex flex-col w-full max-w-7xl items-end gap-2">
       <Button asChild>
         <Link
-          href={`/auction/${slug}/new-lots`}
+          href={`/auction/${slug}/new-lot`}
           className="md:w-fit"
         >
           Додати лоти для даного аукціону
