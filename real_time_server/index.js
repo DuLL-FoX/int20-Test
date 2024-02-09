@@ -11,7 +11,7 @@ const io = new Server(server, {
     }
 });
 
-const redisClient = createClient({ url: 'redis://130.162.253.235:6379' });
+const redisClient = createClient({ url: process.env.REDIS_URL || 'redis://130.162.253.235:6379'});
 const redisSubscriber = redisClient.duplicate();
 
 redisClient.on('connect', () => console.log('Redis client connected'));
