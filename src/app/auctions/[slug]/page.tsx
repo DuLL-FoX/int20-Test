@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import AuctionDetailsPage from "@/components/auction/AuctionDetailsPage";
 import { Button } from "@/components/ui/button";
 import LotList from "@/components/lot/LotList";
+import Chat from "@/components/chat/Chat";
 
 interface PageProps {
   params: { slug: string };
@@ -37,6 +38,13 @@ const getContact = cache(async (contactName: string) => {
   return contact;
 });
 
+const getChat = cache(async (id: number) => {
+  return await fetch(`http://localhost:3000/api/chat?auctionId=${id}`, {
+    method: "GET",
+    cache: "no-store",
+  }).then((data) => data.json());
+});
+
 export async function generateStaticParams() {
   const auctions = await db.auction.findMany({
     where: { status: "ACTIVE" },
@@ -60,6 +68,7 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
   const auction = await getAuction(slug);
   const lots = await getLots(slug);
   const contact = await getContact(auction.contactPointContactName);
+  const chat = await getChat(auction.id);
   const { contactEmail } = contact;
   const applicationLink = contactEmail && `mailto:${contactEmail}`;
 
@@ -92,6 +101,7 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
                 : "Відмінено"}
             </p>
           </div>
+          <Chat chatId={chat.id} auctionId={auction.id} />
         </aside>
       </div>
       <LotList lots={lots} slug={slug} />
