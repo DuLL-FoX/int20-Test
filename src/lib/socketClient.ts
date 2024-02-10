@@ -23,17 +23,26 @@ export const disconnectSocket = () => {
 };
 
 export const subscribeToBidUpdates = (callback: (newBid: any) => void) => {
-    socket.on('bidUpdate', callback);
+    if (socket) {
+        socket.on('bidUpdate', callback);
+    }
 };
 
 export const unsubscribeFromBidUpdates = () => {
-    socket.off('bidUpdate');
+    if (socket) {
+        socket.off('bidUpdate');
+    }
 };
 
 export const subscribeToChatUpdates = (callback: (newMessage: any) => void) => {
-    socket.on('newMessage', callback);
+    if (socket) {
+        socket.on('newMessage', callback);
+    }
+
 }
 
 export const unsubscribeFromChatUpdates = () => {
-    socket.off('newMessage');
-}
+    if (socket) {
+        socket.off('newMessage');
+    }
+};
