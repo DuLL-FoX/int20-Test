@@ -1,18 +1,7 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "redis";
-
-const redisClient = createClient({ url: "redis://130.162.253.235:6379" });
-redisClient.connect().catch(console.error);
-
-async function publishEvent(channel: string, message: any) {
-  try {
-    await redisClient.publish(channel, JSON.stringify(message));
-    console.log(`Published event to channel ${channel}`);
-  } catch (error) {
-    console.error(`Failed to publish event: ${error}`);
-  }
-}
+import {publishEvent} from "@/lib/redis";
+import {respondWithError, respondWithSuccess} from "@/lib/respond";
 
 export async function POST(req: NextRequest) {
   const lotId = Number(req.nextUrl.searchParams.get("lotId"));
@@ -32,7 +21,12 @@ export async function POST(req: NextRequest) {
   const bid = await db.auctionBid.create({
     data: { lotId: lot.id, userId, bidAmount },
   });
-  publishEvent("newBidChannel", bid);
+
+  const user = await db.user.findUnique({ where: { id: userId } });
+  if (!user) return respondWithError("User not found.", 404);
+  const newBid = { ...bid, user: { username: user.username } };
+
+  await publishEvent("newBidChannel", newBid);
 
   return respondWithSuccess(bid, 201);
 }
@@ -48,16 +42,4 @@ export async function GET(req: NextRequest) {
   return respondWithSuccess(bids, 200);
 }
 
-function respondWithError(message: string, status: number) {
-  return new NextResponse(JSON.stringify({ error: message }), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-}
 
-function respondWithSuccess(data: any, status: number) {
-  return new NextResponse(JSON.stringify(data), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-}

@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import Cookies from "js-cookie";
-import { GetUserBids } from "@/app/api/bids/UserBids/UserBids";
 
 export default function LotBids(id) {
   const [bids, setBids] = useState<any[]>([]);
@@ -13,17 +12,13 @@ export default function LotBids(id) {
     const socket = io("http://localhost:3001");
     const storedSelectedUser = Cookies.get("selectedUser");
 
-    if (storedSelectedUser) {
-      setSelectedUser(storedSelectedUser);
-    }
+    fetch("/api/bids?lotId=1")
+      .then((response) => response.json())
+      .then((data) => setBids(data));
 
     fetch(`/api/bids?lotId=${id}`)
       .then((response) => response.json())
       .then((data) => setBids(data));
-
-    socket.on("connect", () => {
-      console.log("Connected to the server");
-    });
 
     socket.on("disconnect", () => {
       console.log("Disconnected from the server");
@@ -34,6 +29,7 @@ export default function LotBids(id) {
       setBids((prevBids) => [...prevBids, newBid]);
     });
 
+    // Clean up the effect
     return () => {
       socket.disconnect();
     };

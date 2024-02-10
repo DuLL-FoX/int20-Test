@@ -7,11 +7,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://192.168.0.180:3000",
+        origin: "*",
     }
 });
 
-const redisClient = createClient({ url: 'redis://130.162.253.235:6379' });
+const redisClient = createClient({ url: process.env.REDIS_URL || 'redis://130.162.253.235:6379'});
 const redisSubscriber = redisClient.duplicate();
 
 redisClient.on('connect', () => console.log('Redis client connected'));
@@ -27,6 +27,12 @@ async function setupRedis() {
             const bid = JSON.parse(message);
             io.emit('bidUpdate', bid);
         });
+
+        await redisSubscriber.subscribe('newMessage', (message) => {
+            const msg = JSON.parse(message);
+            io.emit('newMessage', msg);
+        });
+
     } catch (error) {
         console.error(`Failed to setup Redis: ${error}`);
     }

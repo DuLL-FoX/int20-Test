@@ -1,0 +1,11 @@
+FROM node:20-alpine as build-stage
+WORKDIR /usr/src/real_time_server
+COPY package*.json ./
+RUN npm install
+COPY . .
+
+FROM node:20-alpine as production-stage
+COPY --from=build-stage /usr/src/real_time_server /usr/src/real_time_server
+WORKDIR /usr/src/real_time_server
+EXPOSE 3001
+CMD [ "npm", "run", "start" ]
