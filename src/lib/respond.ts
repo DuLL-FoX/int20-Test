@@ -1,6 +1,6 @@
 import {NextResponse} from "next/server";
 
-async function respondWithError(message: string, status: number) {
+function respondWithError(message: string, status: number) {
     return NextResponse.json(
         {error: message},
         {
@@ -11,7 +11,7 @@ async function respondWithError(message: string, status: number) {
         });
 }
 
-function respondWithSuccess(data: any, status: number) {
+function respondWithSuccess<T extends object>(data: T, status: number) {
     return new NextResponse(JSON.stringify(data), {
         status,
         headers: { "Content-Type": "application/json" },

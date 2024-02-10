@@ -1,4 +1,3 @@
-// src/app/api/chat/message/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { respondWithError } from '@/lib/respond';
