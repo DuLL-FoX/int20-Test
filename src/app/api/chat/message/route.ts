@@ -4,12 +4,21 @@ import { respondWithError } from '@/lib/respond';
 import { publishEvent } from '@/lib/redis';
 
 export async function POST(req: NextRequest) {
-    const { chatMessage, chatId } = await req.json();
-    const userId = Number(req.nextUrl.searchParams.get('userId'));
+    const chatId = Number(req.nextUrl.searchParams.get('chatId'));
+
+    const { chatMessage } = await req.json();
+    const username = Number(req.nextUrl.searchParams.get('username'));
 
     if (!chatMessage) return respondWithError('Message is required.', 400);
-    if (isNaN(userId)) return respondWithError('Invalid userId.', 400);
+    if (!username) return respondWithError('User is required.', 400);
     if (isNaN(chatId)) return respondWithError('Invalid chatId.', 400);
+
+    const user = await db.user.findFirst({
+        where: { username: String(username) },
+        select: { id: true },
+    });
+
+    if (!user) return respondWithError('User not found.', 404);
 
     const chat = await db.chatSession.findFirst({
         where: { id: chatId },
@@ -22,7 +31,7 @@ export async function POST(req: NextRequest) {
         data: {
             messageText: String(chatMessage),
             auctionId: chat.auctionId,
-            userId,
+            userId: user.id,
             chatId,
         },
     });

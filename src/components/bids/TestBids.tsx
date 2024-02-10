@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
     initSocketConnection,
     connectSocket,
@@ -11,6 +11,7 @@ import {
 
 export default function TestBids() {
     const [bids, setBids] = useState<any[]>([]);
+    const hasSubscribedToBidsRef = useRef(false); // useRef to track subscription status
 
     useEffect(() => {
         initSocketConnection();
@@ -18,17 +19,24 @@ export default function TestBids() {
 
         fetch('/api/bids?lotId=1')
             .then((response) => response.json())
-            .then((data) => setBids(data));
+            .then((data) => setBids(data))
+            .catch((error) => console.error('Failed to load bids:', error));
 
-        const handleNewBid = (newBid: any) => {
-            console.log(newBid);
-            setBids((prevBids) => [...prevBids, newBid]);
-        };
+        if (!hasSubscribedToBidsRef.current) {
+            const handleNewBid = (newBid: any) => {
+                console.log(newBid);
+                setBids((prevBids) => [...prevBids, newBid]);
+            };
 
-        subscribeToBidUpdates(handleNewBid);
+            subscribeToBidUpdates(handleNewBid);
+            hasSubscribedToBidsRef.current = true;
+        }
 
         return () => {
-            unsubscribeFromBidUpdates();
+            if (hasSubscribedToBidsRef.current) {
+                unsubscribeFromBidUpdates();
+                hasSubscribedToBidsRef.current = false;
+            }
             disconnectSocket();
         };
     }, []);
