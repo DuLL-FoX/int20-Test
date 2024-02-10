@@ -20,7 +20,6 @@ export async function СreateAuctionPosting(
     briefDescription,
     auctionDate,
     auctionLotLogo,
-    authorName,
   } = createAuctionSchema.parse(values);
 
   const trimmedTitle = title.trim();
