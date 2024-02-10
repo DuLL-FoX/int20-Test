@@ -1,18 +1,7 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "redis";
-
-const redisClient = createClient({ url: "redis://130.162.253.235:6379" });
-redisClient.connect().catch(console.error);
-
-async function publishEvent(channel: string, message: any) {
-  try {
-    await redisClient.publish(channel, JSON.stringify(message));
-    console.log(`Published event to channel ${channel}`);
-  } catch (error) {
-    console.error(`Failed to publish event: ${error}`);
-  }
-}
+import {publishEvent} from "@/lib/redis";
+import {respondWithError, respondWithSuccess} from "@/lib/respond";
 
 export async function POST(req: NextRequest) {
   const lotId = Number(req.nextUrl.searchParams.get("lotId"));
@@ -53,16 +42,4 @@ export async function GET(req: NextRequest) {
   return respondWithSuccess(bids, 200);
 }
 
-function respondWithError(message: string, status: number) {
-  return new NextResponse(JSON.stringify({ error: message }), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-}
 
-function respondWithSuccess(data: any, status: number) {
-  return new NextResponse(JSON.stringify(data), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-}

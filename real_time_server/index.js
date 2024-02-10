@@ -27,6 +27,12 @@ async function setupRedis() {
             const bid = JSON.parse(message);
             io.emit('bidUpdate', bid);
         });
+
+        await redisSubscriber.subscribe('newMessage', (message) => {
+            const msg = JSON.parse(message);
+            io.emit('newMessage', msg);
+        });
+
     } catch (error) {
         console.error(`Failed to setup Redis: ${error}`);
     }
