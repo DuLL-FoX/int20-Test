@@ -2,16 +2,12 @@ import {db} from "@/lib/db";
 import {NextRequest, NextResponse} from "next/server";
 
 export async function GET(req: NextRequest) {
-    const userIdParam = req.nextUrl.searchParams.get("userId");
-    try {
-        if (userIdParam) {
-            const userId = parseInt(userIdParam, 10);
-            if (isNaN(userId)) {
-                return NextResponse.json({error: "Invalid userId provided."}, {status: 400});
-            }
+    const usernameParam = req.nextUrl.searchParams.get("username");
 
+    try {
+        if (usernameParam) {
             const user = await db.user.findUnique({
-                where: {id: userId},
+                where: {username: usernameParam},
                 select: {password: false, username: true},
             });
 
@@ -24,7 +20,7 @@ export async function GET(req: NextRequest) {
                 orderBy: {createdAt: "desc"},
             });
 
-            return NextResponse.json(userAuctions);
+            return NextResponse.json(userAuctions, {status: 200});
         } else {
             const auctions = await db.auction.findMany({
                 where: {status: "ACTIVE"},
@@ -36,3 +32,4 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({error: "An error occurred while processing your request."}, {status: 500});
     }
 }
+
