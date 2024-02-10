@@ -1,45 +1,83 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import {
+    initSocketConnection,
+    connectSocket,
+    disconnectSocket,
+    subscribeToChatUpdates,
+    unsubscribeFromChatUpdates,
+} from '@/lib/socketClient';
 
-export default function Chat({ chatId }: { chatId: number }) {
-  const [messages, setMessages] = useState<string[]>([]);
-  const [input, setInput] = useState('');
+interface ChatMessage {
+    messageText: string;
+}
 
-  useEffect(() => {
-    fetch(`/api/chat/message?chatId=${chatId}`)
-        .then((res) => res.json())
-        .then((data) => setMessages(data.map((msg: any) => msg.messageText)))
-        .catch((error) => console.error("Failed to load messages:", error));
-  }, [chatId]);
+interface ChatProps {
+    chatId: number;
+}
 
-  const handleSend = async () => {
-    if (input) {
-      await fetch('/api/chat/message', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ chatMessage: input, chatId }),
-      });
-      setMessages([...messages, input]);
-      setInput('');
-    }
-  };
+export default function Chat({ chatId }: ChatProps) {
+    const [messages, setMessages] = useState<string[]>([]);
+    const [input, setInput] = useState<string>('');
 
-  return (
-      <div>
+    const addMessage = useCallback((newMessage: { id: number; messageText: string; auctionId: number; userId: number; chatId: number; }) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage.messageText]);
+    }, []);
+
+    useEffect(() => {
+        const initChat = async () => {
+            try {
+                const res = await fetch(`/api/chat/message?chatId=${chatId}`);
+                const data: ChatMessage[] = await res.json();
+                setMessages(data.map((msg) => msg.messageText));
+            } catch (error) {
+                console.error("Failed to load messages:", error);
+            }
+
+            initSocketConnection();
+            connectSocket();
+            subscribeToChatUpdates(addMessage);
+
+            return () => {
+                unsubscribeFromChatUpdates();
+                disconnectSocket();
+            };
+        };
+
+        initChat();
+    }, [chatId, addMessage]);
+
+    const handleSend = async () => {
+        if (input.trim()) {
+            await fetch('/api/chat/message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ chatMessage: input, chatId }),
+            });
+            setInput('');
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInput(e.target.value);
+    };
+
+    return (
         <div>
-          {messages.map((message, index) => (
-              <p key={index}>{message}</p>
-          ))}
+            <div>
+                {messages.map((message, index) => (
+                    <p key={index}>{message}</p>
+                ))}
+            </div>
+            <input
+                type="text"
+                value={input}
+                onChange={handleInputChange}
+            />
+            <button onClick={handleSend}>Send</button>
         </div>
-        <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-        />
-        <button onClick={handleSend}>Send</button>
-      </div>
-  );
+    );
 }

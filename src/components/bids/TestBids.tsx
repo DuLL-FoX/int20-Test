@@ -1,34 +1,35 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
-import {io} from "socket.io-client";
+import React, { useEffect, useState } from 'react';
+import {
+    initSocketConnection,
+    connectSocket,
+    disconnectSocket,
+    subscribeToBidUpdates,
+    unsubscribeFromBidUpdates,
+} from '@/lib/socketClient';
 
 export default function TestBids() {
     const [bids, setBids] = useState<any[]>([]);
 
     useEffect(() => {
-        const socket = io("http://localhost:3001");
+        initSocketConnection();
+        connectSocket();
 
-        fetch("/api/bids?lotId=1")
+        fetch('/api/bids?lotId=1')
             .then((response) => response.json())
             .then((data) => setBids(data));
 
-        socket.on("connect", () => {
-            console.log("Connected to the server");
-        });
-
-        socket.on("disconnect", () => {
-            console.log("Disconnected from the server");
-        });
-
-        socket.on("bidUpdate", (newBid) => {
+        const handleNewBid = (newBid: any) => {
             console.log(newBid);
             setBids((prevBids) => [...prevBids, newBid]);
-        });
+        };
 
-        // Clean up the effect
+        subscribeToBidUpdates(handleNewBid);
+
         return () => {
-            socket.disconnect();
+            unsubscribeFromBidUpdates();
+            disconnectSocket();
         };
     }, []);
 
@@ -38,7 +39,7 @@ export default function TestBids() {
             <ul>
                 {bids.map((bid, index) => (
                     <li key={index}>
-                        <p> {JSON.stringify(bid)}</p>
+                        <p>{JSON.stringify(bid)}</p>
                     </li>
                 ))}
             </ul>
