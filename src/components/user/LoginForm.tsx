@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+
 export default function LoginForm() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -57,11 +58,28 @@ export default function LoginForm() {
     router.back();
   }
 
+  //dont look back leaving
+  function leave(){
+    Cookies.remove('users', { path: '' })
+
+
+    try{
+    router.refresh(); // 2 errors, but works
+    }
+    catch(e){
+      console.log(e);
+    }
+  }
+
   async function handleSelectUser(username: string) {
     setSelectedUser(username);
     setUsername(username);
   }
-
+  if(Cookies.get('users'))
+  return (
+    <button onClick={leave} type="button" className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Leave the boat</button>
+    );
+  else 
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -126,4 +144,6 @@ export default function LoginForm() {
       </DialogContent>
     </Dialog>
   );
+
+  
 }
