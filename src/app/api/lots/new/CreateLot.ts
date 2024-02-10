@@ -39,8 +39,14 @@ export async function CreateLotPosting(formData: FormData, username: string) {
         startPrice: parseFloat(startPrice),
         lotLogoUrl,
         naming,
-        auctionId: 1,
-        userId: Number(userId),
+        auction: {
+          connect: { id: 1 },
+        },
+        user: {
+          connect: {
+            id: 1,
+          },
+        },
       },
     });
   } catch (error) {

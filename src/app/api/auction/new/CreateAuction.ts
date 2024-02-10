@@ -8,19 +8,11 @@ import path from "path";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 
-export async function CreateAuctionPosting(
-  formData: FormData,
-  userName: string
-) {
+export async function CreateAuctionPosting(formData: FormData) {
   const values = Object.fromEntries(formData.entries());
 
-  const {
-    title,
-    contactPointContactName,
-    briefDescription,
-    auctionDate,
-    auctionLotLogo,
-  } = createAuctionSchema.parse(values);
+  const { title, contactPhone, briefDescription, auctionDate, auctionLotLogo } =
+    createAuctionSchema.parse(values);
 
   const trimmedTitle = title.trim();
   const trimmedBriefDescription = briefDescription.trim();
@@ -43,6 +35,15 @@ export async function CreateAuctionPosting(
 
   try {
     await db.$transaction(async (prisma) => {
+      await prisma.contactPoint.upsert({
+        where: { contactPhone },
+        update: {},
+        create: {
+          contactName: "dmytro",
+          contactEmail: "irudoj63@gmail.com",
+          contactPhone,
+        },
+      });
       await prisma.auction.create({
         data: {
           slug,
@@ -50,9 +51,13 @@ export async function CreateAuctionPosting(
           auctionLotLogoUrl,
           briefDescription: trimmedBriefDescription,
           auctionDate,
-          contactPointContactName,
-          authorName: userName,
-          chatId: 1,
+          contactPhone,
+          authorName: "dmytro",
+        },
+      });
+      await prisma.chatSession.create({
+        data: {
+          auctionSlug: slug,
         },
       });
     });

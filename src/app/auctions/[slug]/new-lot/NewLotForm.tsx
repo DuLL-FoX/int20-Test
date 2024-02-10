@@ -15,16 +15,22 @@ import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/LoadingButton";
 import { CreateLotPosting } from "@/app/api/lots/new/CreateLot";
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 
 export default function NewLotForm() {
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const username = Cookies.get("selectedUser");
+    setUsername(username as string);
+  }, []);
+
   const form = useForm<createLotValues>({
     resolver: zodResolver(createLotSchema),
   });
 
   const onSubmit = async (values: createLotValues) => {
     const formData = new FormData();
-
-    const username = Cookies.get("selectedUser");
 
     Object.entries(values).forEach(([key, value]) => {
       if (value) {

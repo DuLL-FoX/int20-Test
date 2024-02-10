@@ -32,15 +32,23 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { uk } from "date-fns/locale";
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 
 export default function NewAuctionForm() {
   const form = useForm<createAuctionValues>({
     resolver: zodResolver(createAuctionSchema),
   });
 
-  const username = Cookies.get("selectedUser");
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const username = Cookies.get("selectedUser");
+    setUsername(username as string);
+  }, []);
+
 
   const onSubmit = async (values: createAuctionValues) => {
+    console.log(form.formState.errors);
     const formData = new FormData();
 
     Object.entries(values).forEach(([key, value]) => {
@@ -56,7 +64,7 @@ export default function NewAuctionForm() {
     });
 
     try {
-      await CreateAuctionPosting(formData, username as string);
+      await CreateAuctionPosting(formData);
     } catch (error) {
       alert(error);
     }
@@ -162,13 +170,13 @@ export default function NewAuctionForm() {
             />
             <FormField
               control={control}
-              name="contactPointContactName"
+              name="contactPhone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Номер телефону для подальшого контакту</FormLabel>
                   <FormControl>
                     <Input
-                      id="contactPointContactName"
+                      id="contactPhone"
                       placeholder="Номер телефону"
                       type=""
                       {...field}

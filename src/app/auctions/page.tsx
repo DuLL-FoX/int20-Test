@@ -22,7 +22,7 @@ export default async function Auction() {
         ))}
         {data.length === 0 && (
           <p className="text-center m-auto">
-            There is no data found. Try adjusting your search filters.
+            Не знайдено аукціонів
           </p>
         )}
       </div>

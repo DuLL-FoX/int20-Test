@@ -29,17 +29,17 @@ const getLots = cache(async (slug: string) => {
   return lots;
 });
 
-const getContact = cache(async (contactName: string) => {
+const getContact = cache(async (contactPhone: string) => {
   const contact = await db.contactPoint.findUnique({
-    where: { contactName: contactName },
+    where: { contactPhone: contactPhone },
   });
 
   if (!contact) notFound();
   return contact;
 });
 
-const getChat = cache(async (id: number) => {
-  return await fetch(`http://localhost:3000/api/chat?auctionId=${id}`, {
+const getChat = cache(async (slug: string) => {
+  return await fetch(`http://localhost:3000/api/chat?auctionSlug=${slug}`, {
     method: "GET",
     cache: "no-store",
   }).then((data) => data.json());
@@ -67,8 +67,8 @@ export async function generateMetadata({
 export default async function AuctionDetails({ params: { slug } }: PageProps) {
   const auction = await getAuction(slug);
   const lots = await getLots(slug);
-  const contact = await getContact(auction.contactPointContactName);
-  const chat = await getChat(auction.id);
+  const contact = await getContact(auction.contactPhone as string);
+  const chat = await getChat(slug);
   const { contactEmail } = contact;
   const applicationLink = contactEmail && `mailto:${contactEmail}`;
 
@@ -101,7 +101,7 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
                 : "Відмінено"}
             </p>
           </div>
-          <Chat chatId={chat.id} auctionId={auction.id} />
+          <Chat chatId={chat.id} />
         </aside>
       </div>
       <LotList lots={lots} slug={slug} />
