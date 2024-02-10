@@ -13,12 +13,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUser } from "@/contexts/UserContext";
 
 export default function LoginForm() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [users, setUsers] = useState<string[]>([]);
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selectedUser] = useState<string | null>(null);
+  const { setSelectedUser } = useUser();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export default function LoginForm() {
   }
 
   async function handleSelectUser(username: string) {
-    setSelectedUser(username);
+    //setSelectedUser(username);
     setUsername(username);
   }
 

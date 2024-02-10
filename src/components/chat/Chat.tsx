@@ -1,60 +1,83 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Cookies from "js-cookie";
+import React, { useEffect, useState, useCallback } from 'react';
+import {
+    initSocketConnection,
+    connectSocket,
+    disconnectSocket,
+    subscribeToChatUpdates,
+    unsubscribeFromChatUpdates,
+} from '@/lib/socketClient';
 
-export default function Chat({
-  chatId,
-  auctionId,
-}: {
-  chatId: number;
-  auctionId: number;
-}) {
-  const [messages, setMessages] = useState<string[]>([]);
-  const [input, setInput] = useState("");
-  const [user, setUser] = useState("");
-  useEffect(() => {
-    fetch(`/api/chat?auctionId=${auctionId}`, {
-      method: "POST",
-    });
+interface ChatMessage {
+    messageText: string;
+}
 
-    fetch(`/api/chat/message?chatId=${chatId}`)
-      .then((res) => res.json())
-      .then((data) => setMessages(data.map((msg: any) => msg.messageText)))
-      .catch((error) => console.error("Failed to load messages:", error));
+interface ChatProps {
+    chatId: number;
+}
 
-    const username = Cookies.get("selectedUser");
-    setUser(username as string);
-  }, [chatId]);
+export default function Chat({ chatId }: ChatProps) {
+    const [messages, setMessages] = useState<string[]>([]);
+    const [input, setInput] = useState<string>('');
 
-  const handleSend = async () => {
-    if (input) {
-      await fetch(`/api/chat/message?${user}`, {
-        method: "POST",
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ chatMessage: input, chatId }),
-      });
-      setMessages([...messages, input]);
-      setInput("");
-    }
-  };
+    const addMessage = useCallback((newMessage: { id: number; messageText: string; auctionId: number; userId: number; chatId: number; }) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage.messageText]);
+    }, []);
 
-  return (
-    <div>
-      <div>
-        {messages.map((message, index) => (
-          <p key={index}>{message}</p>
-        ))}
-      </div>
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-      <button onClick={handleSend}>Send</button>
-    </div>
-  );
+    useEffect(() => {
+        const initChat = async () => {
+            try {
+                const res = await fetch(`/api/chat/message?chatId=${chatId}`);
+                const data: ChatMessage[] = await res.json();
+                setMessages(data.map((msg) => msg.messageText));
+            } catch (error) {
+                console.error("Failed to load messages:", error);
+            }
+
+            initSocketConnection();
+            connectSocket();
+            subscribeToChatUpdates(addMessage);
+
+            return () => {
+                unsubscribeFromChatUpdates();
+                disconnectSocket();
+            };
+        };
+
+        initChat();
+    }, [chatId, addMessage]);
+
+    const handleSend = async () => {
+        if (input.trim()) {
+            await fetch('/api/chat/message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ chatMessage: input, chatId }),
+            });
+            setInput('');
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInput(e.target.value);
+    };
+
+    return (
+        <div>
+            <div>
+                {messages.map((message, index) => (
+                    <p key={index}>{message}</p>
+                ))}
+            </div>
+            <input
+                type="text"
+                value={input}
+                onChange={handleInputChange}
+            />
+            <button onClick={handleSend}>Send</button>
+        </div>
+    );
 }

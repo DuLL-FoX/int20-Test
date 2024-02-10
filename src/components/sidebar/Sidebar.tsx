@@ -13,6 +13,8 @@ import { useTheme } from "next-themes";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import UserProfile from "../user/profile/Profile";
+import Link from "next/link";
+import {useUser} from "@/contexts/UserContext";
 
 const sidebarItems = [
   {
@@ -48,7 +50,7 @@ const SidebarList = dynamic(() => import("./SidebarList"), {
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const { theme } = useTheme();
-  const [selectedUser, setSelectedUser] = useState<string | null>();
+  const { selectedUser, setSelectedUser } = useUser();
 
   useEffect(() => {
     const storedSelectedUser = Cookies.get("selectedUser");

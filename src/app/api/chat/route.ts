@@ -1,7 +1,6 @@
-// src/app/api/chat/route.ts
 import {db} from '@/lib/db';
-import {NextRequest, NextResponse} from 'next/server';
-import {respondWithError} from '@/lib/respond';
+import {NextRequest} from 'next/server';
+import {respondWithError, respondWithSuccess} from '@/lib/respond';
 
 export async function GET(req: NextRequest) {
     const auctionId = req.nextUrl.searchParams.get('auctionId');
@@ -15,7 +14,7 @@ export async function GET(req: NextRequest) {
         return respondWithError('Chat not found', 404);
     }
 
-    return NextResponse.json({chatId : chat.id}, {status: 200});
+    return respondWithSuccess({chatId: chat.id}, 200);
 }
 
 export async function POST(req: NextRequest) {
@@ -43,5 +42,5 @@ export async function POST(req: NextRequest) {
         },
     });
 
-    return NextResponse.json({chat, string: 'Chat was created successful'}, {status: 200});
+    return respondWithSuccess(chat, 201);
 }
