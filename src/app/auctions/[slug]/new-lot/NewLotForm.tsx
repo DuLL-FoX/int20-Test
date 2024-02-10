@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/LoadingButton";
-import { CreateLotPosting } from "@/app/api/lots/new/СreateLot";
+import { CreateLotPosting } from "@/app/api/lots/new/CreateLot";
 import Cookies from "js-cookie";
 
 export default function NewLotForm() {

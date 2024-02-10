@@ -2,11 +2,6 @@
 
 import { db } from "@/lib/db";
 
-type BidsProps = {
-  lotId: number;
-  username: string;
-};
-
 export async function GetUserBids(username: string) {
   try {
     return await db.auctionBid.findMany({

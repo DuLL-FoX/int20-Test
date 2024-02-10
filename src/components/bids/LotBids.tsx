@@ -5,12 +5,9 @@ import { io } from "socket.io-client";
 import Cookies from "js-cookie";
 import { GetUserBids } from "@/app/api/bids/UserBids/UserBids";
 
-
-export default function TestBids() {
+export default function LotBids(id) {
   const [bids, setBids] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>();
-
-
 
   useEffect(() => {
     const socket = io("http://localhost:3001");
@@ -20,7 +17,7 @@ export default function TestBids() {
       setSelectedUser(storedSelectedUser);
     }
 
-    fetch("/api/bids?lotId=1")
+    fetch(`/api/bids?lotId=${id}`)
       .then((response) => response.json())
       .then((data) => setBids(data));
 
@@ -37,7 +34,6 @@ export default function TestBids() {
       setBids((prevBids) => [...prevBids, newBid]);
     });
 
-    // Clean up the effect
     return () => {
       socket.disconnect();
     };

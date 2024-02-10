@@ -8,7 +8,7 @@ import path from "path";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 
-export async function СreateAuctionPosting(
+export async function CreateAuctionPosting(
   formData: FormData,
   userName: string
 ) {

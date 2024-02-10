@@ -22,7 +22,6 @@ export default function AuctionListItem({
     startPrice,
   },
 }: LotListItemProps) {
-  const { theme } = useTheme();
   const [formattedMoney, setFormattedMoney] = useState("");
 
   useEffect(() => {
@@ -35,7 +34,7 @@ export default function AuctionListItem({
         src={logoPlaceholder}
         priority={false}
         alt={`${naming}-${objectClassifier} logo`}
-        className="rounded-lg self-center"
+        className="rounded-lg self-center bg-slate-50"
         height={50}
         width={50}
       />
