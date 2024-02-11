@@ -4,9 +4,12 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npx prisma generate
+RUN npm run build
 
 FROM node:20-alpine as production-stage
 COPY --from=build-stage /usr/src/int20 /usr/src/int20
 WORKDIR /usr/src/int20
 EXPOSE 3000
+# Ensure start.sh is executable and exists
+RUN chmod +x start.sh
 CMD ["./start.sh"]
