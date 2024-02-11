@@ -58,7 +58,20 @@ export async function GET(req: NextRequest) {
         orderBy: { id: "asc" },
     });
 
+    const users = await db.user.findMany({
+        where: { id: { in: messages.map((message) => message.userId) } },
+    });
+
     if (!messages) return respondWithError("Messages not found.", 404);
 
-    return NextResponse.json(messages, { status: 200 });
+    const messagesWithUsername = messages.map(message => {
+        const user = users.find(user => user.id === message.userId);
+        return {
+            ...message,
+            username: user ? user.username : 'Unknown user',
+            userId: undefined,
+        };
+    });
+
+    return NextResponse.json(messagesWithUsername, { status: 200 });
 }
