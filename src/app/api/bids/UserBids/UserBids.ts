@@ -7,7 +7,10 @@ export async function GetUserBids(username: string) {
     return await db.auctionBid.findMany({
       where: { user: { username: username } },
       orderBy: { createdAt: "desc" },
-      include: { user: { select: { username: true } } },
+      include: {
+        user: { select: { username: true } },
+        lot: { select: { lotSlug: true } },
+      },
     });
   } catch (error) {
     console.error("Error creating lot: ", error);

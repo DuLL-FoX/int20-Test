@@ -6,11 +6,10 @@ import { GetUserBids } from "@/app/api/bids/UserBids/UserBids";
 import H1 from "@/components/ui/h1";
 import Link from "next/link";
 import AuctionListItem from "@/components/auction/AuctionListItem";
-import { Auction } from "@prisma/client";
+import { Auction, } from "@prisma/client";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -22,12 +21,6 @@ import { formatDate, formatMoney } from "@/lib/utils";
 const getAuction = cache(async (username: string) => {
   return await db.auction.findMany({
     where: { authorName: username },
-  });
-});
-
-const getLots = cache(async (username: string) => {
-  return await db.auctionLot.findMany({
-    where: { auction: { authorName: username } },
   });
 });
 
@@ -60,6 +53,7 @@ export default async function MyActivity({
 }: MyBidsProps) {
   const bids = await GetUserBids(username);
   const auction = await getAuction(username);
+
   return (
     <main className="flex flex-col px-4 w-full max-w-7xl my-10 space-y-10 md:items-center">
       {auction.length === 0 && (
@@ -98,7 +92,9 @@ export default async function MyActivity({
               <TableCell className="font-semibold">
                 {formatDate(bid.createdAt)}
               </TableCell>
-              <TableCell className="font-semibold">{formatMoney(bid.bidAmount)}</TableCell>
+              <TableCell className="font-semibold">
+                {formatMoney(bid.bidAmount)}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
