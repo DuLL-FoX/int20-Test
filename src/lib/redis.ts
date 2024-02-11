@@ -4,7 +4,7 @@ let redisClient: RedisClientType | null = null;
 
 async function getRedisClient(): Promise<RedisClientType> {
     if (!redisClient) {
-        redisClient = createClient({url: "redis://130.162.253.235:6379"});
+        redisClient = createClient({ url: process.env.REDIS_URL || 'redis://130.162.253.235:6379'});
         await redisClient.connect().catch((error) => {
             console.error("Failed to connect to Redis:", error);
             throw error;
