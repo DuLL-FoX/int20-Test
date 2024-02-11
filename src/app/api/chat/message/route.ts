@@ -36,9 +36,15 @@ export async function POST(req: NextRequest) {
         },
     });
 
-    await publishEvent("newMessage", newMessage);
+    const newMessageWithUsername = {
+        ...newMessage,
+        username: username,
+        userId: undefined,
+    };
 
-    return NextResponse.json(newMessage, { status: 201 });
+    await publishEvent("newMessage", newMessageWithUsername);
+
+    return NextResponse.json(newMessageWithUsername, { status: 201 });
 }
 
 export async function GET(req: NextRequest) {
