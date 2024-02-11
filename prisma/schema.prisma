@@ -106,7 +106,7 @@ model ChatSession {
 model Message {
   id          Int          @id @default(autoincrement())
   messageText String
-  auctionSlug String       @unique
+  auctionSlug String
   userId      Int
   Chat        ChatSession? @relation(fields: [chatId], references: [id])
   chatId      Int?
