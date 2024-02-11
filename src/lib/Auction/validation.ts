@@ -30,3 +30,12 @@ export const auctionFilterSchema = z.object({
 });
 
 export type AuctionFilterValues = z.infer<typeof auctionFilterSchema>;
+
+export const updateAuctionSchema = z.object({
+  title: requiredString.max(100),
+  auctionLotLogo: auctionLogoSchema,
+  briefDescription: z.string().max(5000),
+  auctionDate: z.coerce.date(),
+});
+
+export type updateAuctionValues = z.infer<typeof updateAuctionSchema>;

@@ -6,6 +6,7 @@ import AuctionDetailsPage from "@/components/auction/AuctionDetailsPage";
 import { Button } from "@/components/ui/button";
 import LotList from "@/components/lot/LotList";
 import Chat from "@/components/chat/Chat";
+import Link from "next/link";
 
 interface PageProps {
   params: { slug: string };
@@ -90,7 +91,12 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
       <div className="flex flex-col m-auto lg:flex-row items-center gap-5 md:items-start">
         <AuctionDetailsPage auction={auction} contact={contact} />
         <aside className="flex flex-col items-center space-y-5 lg:border-l max-lg:border-y w-full p-3 h-full">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center space-y-2">
+            <Button asChild>
+              <Link href={`/auctions/${slug}/update-auction`} className="w-40 md:w-fit">
+                Змінити дані аукціону
+              </Link>
+            </Button>
             <Button asChild>
               <a href={applicationLink} className="w-40 md:w-fit">
                 Написати на email
@@ -113,7 +119,10 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
             <p className="font-semibold m-2 p-2">Активні користувачі</p>
             {activeUsers.map((user) => {
               return (
-                <p key={user} className="flex flex-col items-end gap-2 font-sans m-auto border-y w-full p-3 rounded-md">
+                <p
+                  key={user}
+                  className="flex flex-col items-end gap-2 font-sans m-auto border-y w-full p-3 rounded-md"
+                >
                   {user}
                 </p>
               );
