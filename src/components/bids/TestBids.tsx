@@ -11,7 +11,7 @@ import {
 
 export default function TestBids() {
     const [bids, setBids] = useState<any[]>([]);
-    const hasSubscribedToBidsRef = useRef(false); // useRef to track subscription status
+    const hasSubscribedToBidsRef = useRef(false);
 
     useEffect(() => {
         initSocketConnection();

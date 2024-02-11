@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { statusAuc } from "@/lib/auction-types";
 
 const requiredString = z.string().min(1, "Обов'язкове поле");
 
@@ -26,7 +27,6 @@ export type createAuctionValues = z.infer<typeof createAuctionSchema>;
 
 export const auctionFilterSchema = z.object({
   q: z.string().optional(),
-  status: z.string().optional(),
 });
 
 export type AuctionFilterValues = z.infer<typeof auctionFilterSchema>;

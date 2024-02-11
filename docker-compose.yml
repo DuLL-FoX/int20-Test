@@ -12,7 +12,7 @@ services:
       - postgres-service
       - keydb-service
     environment:
-      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@postgres:5432/int20?schema=public}
+      - DATABASE_URL=postgresql://int20test:test@130.162.253.235:5432/int20_test
     restart: unless-stopped
 
   backend:
