@@ -101,7 +101,7 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
                 : "Відмінено"}
             </p>
           </div>
-          <Chat chatId={chat.id} />
+          <Chat auctionSlug={slug} />
         </aside>
       </div>
       <LotList lots={lots} slug={slug} />

@@ -19,10 +19,10 @@ interface ChatMessage {
 }
 
 interface ChatProps {
-    chatId: number;
+    auctionSlug: string;
 }
 
-export default function Chat({ chatId }: ChatProps) {
+export default function Chat({ auctionSlug }: ChatProps) {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState<string>('');
     const { selectedUser } = useUser();
@@ -37,12 +37,17 @@ export default function Chat({ chatId }: ChatProps) {
         let isMounted = true;
 
         const initChat = async () => {
-            if (!isMounted || hasSubscribedRef.current) return;
+            if (!isMounted && hasSubscribedRef.current) return;
 
             try {
-                const res = await fetch(`/api/chat/message?chatId=${chatId}`);
+                const res = await fetch(`/api/chat/message?auctionSlug=${auctionSlug}`);
                 const data: ChatMessage[] = await res.json();
-                setMessages(data);
+                if (Array.isArray(data)) {
+                    setMessages(data);
+                } else {
+                    console.error('Fetched data is not an array:', data);
+                    setMessages([]);
+                }
             } catch (error) {
                 console.error('Failed to load messages:', error);
             }
@@ -65,11 +70,11 @@ export default function Chat({ chatId }: ChatProps) {
             }
             disconnectSocket();
         };
-    }, [chatId, addMessage]);
+    }, [auctionSlug, addMessage]);
 
     const handleSend = async () => {
         if (input.trim()) {
-            const queryString = `?username=${selectedUser}&chatId=${chatId}`;
+            const queryString = `?username=${selectedUser}&auctionSlug=${auctionSlug}`;
 
             await fetch(`/api/chat/message${queryString}`, {
                 method: 'POST',
@@ -90,7 +95,7 @@ export default function Chat({ chatId }: ChatProps) {
         <div>
             <div>
                 {messages.map((message) => (
-                    <p key={message.id}>{`${selectedUser || 'Unknown'}: ${message.messageText}`}</p>
+                    <p key={message.id}>{`${selectedUser&& 'Unknown'}: ${message.messageText}`}</p>
                 ))}
             </div>
             <input
