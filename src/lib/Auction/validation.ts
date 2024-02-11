@@ -18,6 +18,8 @@ export const createAuctionSchema = z.object({
   auctionLotLogo: auctionLogoSchema,
   briefDescription: z.string().max(5000),
   auctionDate: z.coerce.date(),
+  email: z.string().max(50),
+  username: requiredString.max(20),
 });
 
 export type createAuctionValues = z.infer<typeof createAuctionSchema>;

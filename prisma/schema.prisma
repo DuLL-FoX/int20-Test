@@ -30,7 +30,7 @@ model Auction {
   auctionDate       DateTime
   auctionLotLogoUrl String        @default("")
   status            AuctionStatus @default(ACTIVE)
-  authorName        String        @unique
+  authorName        String
   author            User          @relation(fields: [authorName], references: [username])
   auctionLots       AuctionLot[]
   chatId            Int?
@@ -106,7 +106,7 @@ model ChatSession {
 model Message {
   id          Int          @id @default(autoincrement())
   messageText String
-  auctionId   Int
+  auctionSlug String       @unique
   userId      Int
   Chat        ChatSession? @relation(fields: [chatId], references: [id])
   chatId      Int?

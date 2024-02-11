@@ -32,9 +32,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <UserProvider>
-            <main className="flex h-full ">
+            <main className="flex h-full">
               <Sidebar />
-              <div className="flex flex-col justify-between items-center h-full m-auto p-5">
+              <div className="flex flex-col justify-between items-center h-full w-fit m-auto p-5">
                 {children}
                 <Footer />
               </div>

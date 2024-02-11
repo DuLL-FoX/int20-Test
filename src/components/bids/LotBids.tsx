@@ -2,15 +2,20 @@
 
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { useUser } from "@/contexts/UserContext";
 import Cookies from "js-cookie";
 
 export default function LotBids({ id }: { id: number }) {
   const [bids, setBids] = useState<any[]>([]);
-  const [selectedUser, setSelectedUser] = useState<string | null>();
+
+  const [selectedUser] = useState<string | null>(null);
+  const { setSelectedUser } = useUser();
 
   useEffect(() => {
     const socket = io("http://localhost:3001");
+
     const storedSelectedUser = Cookies.get("selectedUser");
+    if (storedSelectedUser) setSelectedUser(storedSelectedUser);
 
     fetch(`/api/bids?lotId=${id}`)
       .then((response) => response.json())
@@ -29,7 +34,7 @@ export default function LotBids({ id }: { id: number }) {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [selectedUser]);
 
   return (
     <div>

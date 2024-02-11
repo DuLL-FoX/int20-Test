@@ -33,19 +33,19 @@ import { format } from "date-fns";
 import { uk } from "date-fns/locale";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { useUser } from "@/contexts/UserContext";
 
 export default function NewAuctionForm() {
   const form = useForm<createAuctionValues>({
     resolver: zodResolver(createAuctionSchema),
   });
 
-  const [username, setUsername] = useState("");
+  const [selectedUser, setSelectedUser] = useState("");
 
   useEffect(() => {
     const username = Cookies.get("selectedUser");
-    setUsername(username as string);
-  }, []);
-
+    setSelectedUser(username as string);
+  }, [selectedUser]);
 
   const onSubmit = async (values: createAuctionValues) => {
     console.log(form.formState.errors);
@@ -170,6 +170,19 @@ export default function NewAuctionForm() {
             />
             <FormField
               control={control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ваш нік</FormLabel>
+                  <FormControl>
+                    <Input defaultValue={selectedUser} type="text" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
               name="contactPhone"
               render={({ field }) => (
                 <FormItem>
@@ -179,6 +192,23 @@ export default function NewAuctionForm() {
                       id="contactPhone"
                       placeholder="Номер телефону"
                       type=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ваш email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Введіть ваш email"
+                      type="text"
                       {...field}
                     />
                   </FormControl>
