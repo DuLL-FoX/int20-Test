@@ -69,7 +69,7 @@ export default function AuctionUpdateForm() {
     });
 
     try {
-      await updateAuction(formData, auctionSlug);
+      await updateAuction(formData, auctionSlug, selectedUser);
     } catch (error) {
       alert(error);
     }

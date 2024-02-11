@@ -1,7 +1,7 @@
-import { db } from "@/lib/db";
-import { NextRequest, NextResponse } from "next/server";
-import { respondWithError, respondWithSuccess } from "@/lib/respond";
-import type { Auction } from "@prisma/client";
+import {db} from "@/lib/db";
+import {NextRequest, NextResponse} from "next/server";
+import {respondWithError, respondWithSuccess} from "@/lib/respond";
+import type {Auction} from "@prisma/client";
 
 interface User {
     username: string;
@@ -9,15 +9,15 @@ interface User {
 
 async function findUserByUsername(username: string): Promise<User | null> {
     return db.user.findUnique({
-        where: { username },
-        select: { password: false, username: true },
+        where: {username},
+        select: {password: false, username: true},
     });
 }
 
 async function findAuctions(condition: object): Promise<Auction[]> {
     return db.auction.findMany({
         where: condition,
-        orderBy: { createdAt: "desc" },
+        orderBy: {createdAt: "desc"},
     });
 }
 
@@ -29,26 +29,42 @@ export async function GET(req: NextRequest) {
             const user = await findUserByUsername(usernameParam);
             if (!user) return respondWithError("User not found.", 404);
 
-            const userAuctions = await findAuctions({ authorName: user.username });
+            const userAuctions = await findAuctions({authorName: user.username});
             return respondWithSuccess(userAuctions, 200);
         } else {
-            const auctions = await findAuctions({ status: "ACTIVE" });
+            const auctions = await findAuctions({status: "ACTIVE"});
             return respondWithSuccess(auctions, 200);
         }
     } catch (err) {
-        return NextResponse.json({ error: "An error occurred while processing your request." }, { status: 500 });
+        return NextResponse.json({error: "An error occurred while processing your request."}, {status: 500});
     }
 }
 
 export async function PATCH(req: NextRequest) {
     const auctionIdParam = req.nextUrl.searchParams.get("id");
+    const usernameParam = req.nextUrl.searchParams.get("username");
     const auctionId = Number(auctionIdParam);
+
+    if (!usernameParam) {
+        return respondWithError("Invalid username value.", 400);
+    }
+
+    const user = await findUserByUsername(usernameParam);
+    if (!user) {
+        return respondWithError("User not found.", 404);
+    }
+
+    const userAuctions = await findAuctions({authorName: user.username});
+    const userAuctionIds = userAuctions.map((auction) => auction.id);
+    if (!userAuctionIds.includes(auctionId)) {
+        return respondWithError("User is not the author of the auction.", 403);
+    }
 
     if (!auctionIdParam || isNaN(auctionId)) {
         return respondWithError("Invalid auctionId value.", 400);
     }
 
-    const existingAuction = await db.auction.findUnique({ where: { id: auctionId } });
+    const existingAuction = await db.auction.findUnique({where: {id: auctionId}});
     if (!existingAuction) {
         return respondWithError("Auction not found.", 404);
     }
@@ -67,7 +83,7 @@ export async function PATCH(req: NextRequest) {
 
     try {
         const updatedAuction = await db.auction.update({
-            where: { id: auctionId },
+            where: {id: auctionId},
             data: updateFields,
         });
 
