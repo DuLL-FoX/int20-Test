@@ -70,35 +70,31 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
   }
 
   return (
-    <main className="flex flex-col px-4 max-w-7xl my-10 space-y-10 md:items-center">
-      <div className="flex justify-between space-x-60">
-        <div className="flex flex-col m-auto md:flex-row items-center gap-5 md:items-start">
-          <AuctionDetailsPage auction={auction} contact={contact} />
-          <aside className="flex flex-col items-center space-y-5 border-l p-3 h-full">
-            <div className="flex flex-col items-center">
-              <Button asChild>
-                <a href={applicationLink} className="w-40 md:w-fit">
-                  Написати на email
-                </a>
-              </Button>
-              <p className="flex items-center text-muted-foreground text-sm font-medium">
-                {contactEmail}
-              </p>
-            </div>
-            <div className="hidden md:flex shrink-0 items-end justify-center">
-              <p className="border px-2 rounded py-1 bg-muted text-muted-foreground text-sm font-medium">
-                {auction.status === "ACTIVE"
-                  ? "Активний"
-                  : auction.status === "ENDED"
-                  ? "Закінчено"
-                  : "Відмінено"}
-              </p>
-            </div>
-          </aside>
-        </div>
-        <div className="flex">
-          <Chat auctionSlug={slug} />
-        </div>
+    <main className="flex flex-col px-4 w-full max-w-7xl my-10 space-y-10 md:items-center">
+      <div className="flex flex-col m-auto md:flex-row items-center gap-5 md:items-start">
+        <AuctionDetailsPage auction={auction} contact={contact} />
+        <aside className="flex flex-col items-center space-y-5 border-l p-3 h-full">
+          <div className="flex flex-col items-center">
+            <Button asChild>
+              <a href={applicationLink} className="w-40 md:w-fit">
+                Написати на email
+              </a>
+            </Button>
+            <p className="flex items-center text-muted-foreground text-sm font-medium">
+              {contactEmail}
+            </p>
+          </div>
+          <div className="hidden md:flex shrink-0 items-end justify-center">
+            <p className="border px-2 rounded py-1 bg-muted text-muted-foreground text-sm font-medium">
+              {auction.status === "ACTIVE"
+                ? "Активний"
+                : auction.status === "ENDED"
+                ? "Закінчено"
+                : "Відмінено"}
+            </p>
+          </div>
+          <Chat auctionSlug={slug}/>
+        </aside>
       </div>
       <LotList lots={lots} slug={slug} />
     </main>
