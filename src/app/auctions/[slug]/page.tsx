@@ -20,6 +20,21 @@ const getAuction = cache(async (slug: string) => {
   return auction;
 });
 
+function onlyUnique(value: any, index: any, array: string | any[]) {
+  return array.indexOf(value) === index;
+}
+
+const getUsers = cache(async (slug: string) => {
+  const users = await db.auctionBid.findMany({
+    where: { lot: { auction: { slug } } },
+    select: { user: true },
+  });
+
+  const unique = [...new Set(users.map((item) => item.user.username))];
+  if (!users) notFound();
+  return unique;
+});
+
 const getLots = cache(async (slug: string) => {
   const lots = await db.auctionLot.findMany({
     where: { auction: { slug: slug } },
@@ -63,6 +78,7 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
   const contact = await getContact(auction.contactPhone as string);
   const { contactEmail } = contact;
   const applicationLink = contactEmail && `mailto:${contactEmail}`;
+  const activeUsers = await getUsers(slug);
 
   if (!applicationLink) {
     console.error("Аукціон не має email");
@@ -92,6 +108,16 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
                 ? "Закінчено"
                 : "Відмінено"}
             </p>
+          </div>
+          <div className="flex flex-col justify-start p-3 align-bottom border h-60 overflow-auto overflow-y-scroll scroll-smooth rounded-md">
+            <p className="font-semibold m-2 p-2">Активні користувачі</p>
+            {activeUsers.map((user) => {
+              return (
+                <p key={user} className="flex flex-col items-end gap-2 font-sans m-auto border-y w-full p-3 rounded-md">
+                  {user}
+                </p>
+              );
+            })}
           </div>
         </aside>
         <div className="flex">
