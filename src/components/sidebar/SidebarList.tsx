@@ -3,10 +3,7 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import {
-  ChevronFirst,
-  ChevronLast,
-} from "lucide-react";
+import { ChevronFirst, ChevronLast, Settings } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
 type SidebarItem = {
@@ -21,12 +18,14 @@ type SidebarGroupProps = {
   expanded: boolean;
   setExpanded: Dispatch<SetStateAction<boolean>>;
   theme: string | undefined;
+  selectedUser: string | undefined;
 };
 
 export default function SidebarList({
   sidebarItems,
   expanded,
-  setExpanded
+  setExpanded,
+  selectedUser,
 }: SidebarGroupProps) {
   const pathName = usePathname();
   const { theme } = useTheme();
@@ -40,6 +39,7 @@ export default function SidebarList({
       >
         <Image
           src="https://img.logoipsum.com/288.svg"
+          priority={true}
           alt="App logo"
           width={32}
           height={10}
@@ -92,6 +92,31 @@ export default function SidebarList({
             )}
           </Link>
         ))}
+        <Link
+          href={`/my-bids/${selectedUser}`}
+          className={`relative flex justify-center items-center 
+          py-2 px-3 my-1 font-medium 
+        rounded-md cursor-pointer transition-colors group
+        ${
+          pathName.startsWith(`/my-bids/`)
+            ? "bg-gradient-to-tr from-indigo-200 to-indigo-100"
+            : "hover:bg-indigo-500 "
+        }
+        ${
+          theme === "dark" &&
+          "text-indigo-100 from-indigo-700 to-indigo-600 hover:bg-indigo-500"
+        }
+        `}
+        >
+          <Settings size={20} />
+          <span
+            className={`overflow-hidden transition-all ${
+              expanded ? "w-52 ml-3" : "w-0"
+            }`}
+          >
+            Мої активності
+          </span>
+        </Link>
       </ul>
     </>
   );

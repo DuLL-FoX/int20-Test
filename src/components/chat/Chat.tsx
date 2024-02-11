@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
     initSocketConnection,
     connectSocket,
@@ -13,16 +13,16 @@ import { useUser } from '@/contexts/UserContext';
 interface ChatMessage {
     id: number;
     messageText: string;
-    auctionId: number;
+    auctionSlug: string;
     userId: number;
     chatId: number;
 }
 
 interface ChatProps {
-    chatId: number;
+    auctionSlug: string;
 }
 
-export default function Chat({ chatId }: ChatProps) {
+export default function Chat({ auctionSlug }: ChatProps) {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState<string>('');
     const { selectedUser } = useUser();
@@ -40,7 +40,7 @@ export default function Chat({ chatId }: ChatProps) {
             if (!isMounted || hasSubscribedRef.current) return;
 
             try {
-                const res = await fetch(`/api/chat/message?chatId=${chatId}`);
+                const res = await fetch(`/api/chat/message?auctionSlug=${auctionSlug}`);
                 const data: ChatMessage[] = await res.json();
                 setMessages(data);
             } catch (error) {
@@ -65,11 +65,11 @@ export default function Chat({ chatId }: ChatProps) {
             }
             disconnectSocket();
         };
-    }, [chatId, addMessage]);
+    }, [auctionSlug, addMessage]);
 
     const handleSend = async () => {
         if (input.trim()) {
-            const queryString = `?username=${selectedUser}&chatId=${chatId}`;
+            const queryString = `?username=${selectedUser}&auctionSlug=${auctionSlug}`;
 
             await fetch(`/api/chat/message${queryString}`, {
                 method: 'POST',

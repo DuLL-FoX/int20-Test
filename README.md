@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Online Charity Auction Platform
+
+## Disclaimer
+
+Developed under the constraints of a hackathon, this platform is a proof of concept designed for demonstration. While fully functional for its intended showcase, ongoing optimization and feature completion are anticipated. Your understanding and feedback are valued.
+
+## Technologies
+
+Our platform harnesses a curated stack of modern technologies, each chosen for its contribution to our performance, scalability, and user experience goals:
+- **Node.js** for its efficient, event-driven architecture.
+- **Next.js** to unify the benefits of React with server-side rendering.
+- **Socket.io** for seamless real-time web socket communication.
+- **TypeScript** to enhance code reliability and maintainability.
+- **Redis** as a high-performance cache and message broker.
+- **Docker** for consistent deployment and scalability.
+- **PostgreSQL** for robust, relational data storage.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Ensure [Node.js](https://nodejs.org/en/) is installed on your machine.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Setup and Run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Option 1: Dry Run (Without Docker)**
+1. Clone and navigate:
+    ```sh
+    git clone https://github.com/DuLL-FoX/int20-Test
+    cd int20-Test
+    ```
+2. Install dependencies:
+    ```sh
+    npm install
+    cd real_time_server && npm install
+    ```
+3. Build and start:
+    ```sh
+    npm run build
+    npm start
+    cd real_time_server && npm start
+    ```
+4. Access at `http://localhost:3000`.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**Option 2: Using Docker**
+1. Clone and deploy:
+    ```sh
+    git clone https://github.com/DuLL-FoX/int20-Test
+    docker-compose up --build
+    ```
+2. Navigate to `http://localhost:3000`.
 
-## Learn More
+## Features
 
-To learn more about Next.js, take a look at the following resources:
+### Core Auction Features
+- **Auction Management**: Seamless creation and real-time viewing of auctions.
+- **Bidding System**: Engage with auctions through live bids and updates.
+- **Interaction**: Real-time chat and bid history for enhanced user engagement.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Advanced Functionalities
+- **Live Bidding**: Utilize web sockets for instant notification and updates.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Additional Notes
 
-## Deploy on Vercel
+Editing auctions is supported in the backend, with UI integration planned for future updates.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Connect
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+For inquiries, feel free to reach out through [Telegram](https://t.me/DuLL_FoX).

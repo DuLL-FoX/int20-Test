@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import RichTextEditor from "@/components/RichTextEditor";
 import { draftToMarkdown } from "markdown-draft-js";
 import LoadingButton from "@/components/LoadingButton";
-import { СreateAuctionPosting } from "@/app/api/auction/new/CreateAuction";
+import { CreateAuctionPosting } from "@/app/api/auction/new/CreateAuction";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -32,15 +32,23 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { uk } from "date-fns/locale";
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { useUser } from "@/contexts/UserContext";
 
 export default function NewAuctionForm() {
   const form = useForm<createAuctionValues>({
     resolver: zodResolver(createAuctionSchema),
   });
 
-  const username = Cookies.get("selectedUser");
+  const [selectedUser, setSelectedUser] = useState("");
+
+  useEffect(() => {
+    const username = Cookies.get("selectedUser");
+    setSelectedUser(username as string);
+  }, [selectedUser]);
 
   const onSubmit = async (values: createAuctionValues) => {
+    console.log(form.formState.errors);
     const formData = new FormData();
 
     Object.entries(values).forEach(([key, value]) => {
@@ -56,7 +64,7 @@ export default function NewAuctionForm() {
     });
 
     try {
-      await СreateAuctionPosting(formData, username as string);
+      await CreateAuctionPosting(formData);
     } catch (error) {
       alert(error);
     }
@@ -162,15 +170,45 @@ export default function NewAuctionForm() {
             />
             <FormField
               control={control}
-              name="contactPointContactName"
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ваш нік</FormLabel>
+                  <FormControl>
+                    <Input defaultValue={selectedUser} type="text" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="contactPhone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Номер телефону для подальшого контакту</FormLabel>
                   <FormControl>
                     <Input
-                      id="contactPointContactName"
+                      id="contactPhone"
                       placeholder="Номер телефону"
                       type=""
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ваш email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Введіть ваш email"
+                      type="text"
                       {...field}
                     />
                   </FormControl>
