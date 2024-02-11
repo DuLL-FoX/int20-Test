@@ -16,7 +16,7 @@ export default function AuctionListItem({
     createdAt,
     auctionLotLogoUrl,
     updatedAt,
-    contactPointContactName,
+    contactPhone,
   },
 }: AuctionListItemProps) {
   return (
@@ -49,7 +49,7 @@ export default function AuctionListItem({
           </p>
           <p className="flex items-center gap-2">
             <Phone size={16} className="shrink-0" />
-            {contactPointContactName}
+            {contactPhone}
           </p>
           <p className="flex items-center gap-2 md:hidden">
             <Clock size={16} className="shrink-0" />

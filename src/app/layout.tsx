@@ -33,7 +33,9 @@ export default function RootLayout({
         >
           <UserProvider>
             <main className="flex h-full">
-              <Sidebar />
+              <div className="flex">
+                <Sidebar />
+              </div>
               <div className="flex flex-col justify-between items-center h-full w-fit m-auto p-5">
                 {children}
                 <Footer />

@@ -33,12 +33,6 @@ const sidebarItems = [
     alert: false,
     link: "/contacts",
   },
-  {
-    icon: <Settings size={20} />,
-    label: "Налаштування",
-    alert: false,
-    link: "/settings",
-  },
 ];
 
 const SidebarList = dynamic(() => import("./SidebarList"), {
@@ -60,7 +54,7 @@ export default function Sidebar() {
   }, [theme, selectedUser]);
 
   return (
-    <aside className="h-full">
+    <aside className="h-full fixed">
       <nav
         className={`h-full flex flex-col bg-background border-r shadow-md ${
           expanded ? "w-60" : ""

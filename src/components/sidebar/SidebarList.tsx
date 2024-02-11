@@ -3,7 +3,7 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { ChevronFirst, ChevronLast } from "lucide-react";
+import { ChevronFirst, ChevronLast, Settings } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
 
 type SidebarItem = {
@@ -108,12 +108,13 @@ export default function SidebarList({
         }
         `}
         >
+          <Settings size={20} />
           <span
             className={`overflow-hidden transition-all ${
               expanded ? "w-52 ml-3" : "w-0"
             }`}
           >
-            Ваші ставки
+            Мої активності
           </span>
         </Link>
       </ul>

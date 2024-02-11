@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
     const chat = await db.chatSession.findFirst({
         where: { id: chatId },
-        select: { id: true, auctionId: true },
+        select: { id: true, auctionSlug: true },
     });
 
   if (!chat) return respondWithError("Chat not found.", 404);
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     const newMessage = await db.message.create({
         data: {
             messageText: String(chatMessage),
-            auctionId: chat.auctionId,
+            auctionSlug: chat.auctionSlug,
             userId: user.id,
             chatId,
         },
