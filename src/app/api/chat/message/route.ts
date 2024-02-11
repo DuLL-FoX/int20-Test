@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { respondWithError } from "@/lib/respond";
-import { publishEvent } from "@/lib/redis";
+import {NextRequest, NextResponse} from "next/server";
+import {db} from "@/lib/db";
+import {respondWithError, respondWithSuccess} from "@/lib/respond";
+import {publishEvent} from "@/lib/redis";
 
 export async function POST(req: NextRequest) {
     const auctionSlug = req.nextUrl.searchParams.get('auctionSlug');

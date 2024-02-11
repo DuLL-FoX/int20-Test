@@ -19,11 +19,14 @@ import { useEffect, useState } from "react";
 
 export default function NewLotForm() {
   const [username, setUsername] = useState("");
-
+  const [auctionSlug, setAuctionSlug] = useState("");
   useEffect(() => {
     const username = Cookies.get("selectedUser");
+    const auctionSlug = Cookies.get("auctionSlug");
+
     setUsername(username as string);
-  }, []);
+    setAuctionSlug(auctionSlug as string);
+  }, [username, auctionSlug]);
 
   const form = useForm<createLotValues>({
     resolver: zodResolver(createLotSchema),
@@ -43,7 +46,7 @@ export default function NewLotForm() {
     });
 
     try {
-      await CreateLotPosting(formData, username as string);
+      await CreateLotPosting(formData, username as string, auctionSlug);
     } catch (error) {
       alert(error);
     }
@@ -59,7 +62,6 @@ export default function NewLotForm() {
     <main className="max-w-3xl m-auto my-10 space-y-10">
       <div className="space-y-5 text-center">
         <H1>Додавання лотів до аукціону</H1>
-        <p className="text-muted-foreground">текст</p>
       </div>
       <div className="space-y-6 border rounded-lg p-4">
         <div>

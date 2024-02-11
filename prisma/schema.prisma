@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["native", "linux-arm64-openssl-3.0.x"]
-  previewFeatures = ["relationJoins"]
+  previewFeatures = ["relationJoins", "fullTextSearch"]
 }
 
 datasource db {
@@ -106,7 +106,7 @@ model ChatSession {
 model Message {
   id          Int          @id @default(autoincrement())
   messageText String
-  auctionSlug String       @unique
+  auctionSlug String
   userId      Int
   Chat        ChatSession? @relation(fields: [chatId], references: [id])
   chatId      Int?

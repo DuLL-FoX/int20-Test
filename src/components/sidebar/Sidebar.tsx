@@ -54,7 +54,7 @@ export default function Sidebar() {
   }, [theme, selectedUser]);
 
   return (
-    <aside className="h-full fixed">
+    <aside className="h-full">
       <nav
         className={`h-full flex flex-col bg-background border-r shadow-md ${
           expanded ? "w-60" : ""

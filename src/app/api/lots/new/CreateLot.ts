@@ -6,17 +6,17 @@ import { toSlug } from "@/lib/utils";
 import { put } from "@vercel/blob";
 import path from "path";
 import { db } from "@/lib/db";
+import { redirect } from "next/navigation";
 
-export async function CreateLotPosting(formData: FormData, username: string) {
+export async function CreateLotPosting(
+  formData: FormData,
+  username: string,
+  auctionSlug: string
+) {
   const { objectClassifier, startPrice, lotLogo, naming } =
     createLotSchema.parse(Object.fromEntries(formData.entries()));
 
   const slug = `${toSlug(naming.trim())}-${nanoid(10)}`;
-
-  const userId = await db.user.findUnique({
-    where: { username },
-    select: { id: true },
-  });
 
   let lotLogoUrl: string = "";
   if (lotLogo instanceof File) {
@@ -40,11 +40,11 @@ export async function CreateLotPosting(formData: FormData, username: string) {
         lotLogoUrl,
         naming,
         auction: {
-          connect: { id: 1 },
+          connect: { slug: auctionSlug },
         },
         user: {
           connect: {
-            id: 1,
+            username,
           },
         },
       },
@@ -53,4 +53,6 @@ export async function CreateLotPosting(formData: FormData, username: string) {
     console.error("Error creating lot: ", error);
     throw error;
   }
+
+  redirect(`/auctions/${auctionSlug}`);
 }
