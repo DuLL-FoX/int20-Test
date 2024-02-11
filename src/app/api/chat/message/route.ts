@@ -4,54 +4,61 @@ import { respondWithError } from "@/lib/respond";
 import { publishEvent } from "@/lib/redis";
 
 export async function POST(req: NextRequest) {
-    const chatId = Number(req.nextUrl.searchParams.get('chatId'));
+    const auctionSlug = req.nextUrl.searchParams.get('auctionSlug');
 
     const { chatMessage } = await req.json();
-    const username = Number(req.nextUrl.searchParams.get('username'));
+    const username = req.nextUrl.searchParams.get('username');
 
     if (!chatMessage) return respondWithError('Message is required.', 400);
     if (!username) return respondWithError('User is required.', 400);
-    if (isNaN(chatId)) return respondWithError('Invalid chatId.', 400);
+    if (!auctionSlug) return respondWithError('Invalid auctionSlug.', 400);
 
     const user = await db.user.findFirst({
-        where: { username: String(username) },
+        where: { username },
         select: { id: true },
     });
 
     if (!user) return respondWithError('User not found.', 404);
 
     const chat = await db.chatSession.findFirst({
-        where: { id: chatId },
+        where: { auctionSlug },
         select: { id: true, auctionSlug: true },
     });
 
-  if (!chat) return respondWithError("Chat not found.", 404);
+    if (!chat) return respondWithError("Chat not found.", 404);
 
     const newMessage = await db.message.create({
         data: {
-            messageText: String(chatMessage),
-            auctionSlug: chat.auctionSlug,
+            messageText: chatMessage,
+            auctionSlug,
             userId: user.id,
-            chatId,
+            chatId: chat.id,
         },
     });
 
-  await publishEvent("newMessage", newMessage);
+    await publishEvent("newMessage", newMessage);
 
-  return NextResponse.json(newMessage, { status: 201 });
+    return NextResponse.json(newMessage, { status: 201 });
 }
 
 export async function GET(req: NextRequest) {
-  const chatId = Number(req.nextUrl.searchParams.get("chatId"));
+    const auctionSlug = req.nextUrl.searchParams.get("auctionSlug");
 
-  if (isNaN(chatId)) return respondWithError("Invalid chatId.", 400);
+    if (!auctionSlug) return respondWithError("Invalid auctionSlug.", 400);
 
-  const messages = await db.message.findMany({
-    where: { chatId },
-    orderBy: { id: "asc" },
-  });
+    const chat = await db.chatSession.findFirst({
+        where: { auctionSlug },
+        select: { id: true },
+    });
 
-  if (!messages) return respondWithError("Messages not found.", 404);
+    if (!chat) return respondWithError("Chat not found.", 404);
 
-  return NextResponse.json(messages, { status: 200 });
+    const messages = await db.message.findMany({
+        where: { chatId: chat.id },
+        orderBy: { id: "asc" },
+    });
+
+    if (!messages) return respondWithError("Messages not found.", 404);
+
+    return NextResponse.json(messages, { status: 200 });
 }
