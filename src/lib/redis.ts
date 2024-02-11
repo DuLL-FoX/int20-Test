@@ -10,6 +10,7 @@ async function getRedisClient(): Promise<RedisClientType> {
             throw error;
         });
     }
+    console.log("Connected to Redis");
     return redisClient;
 }
 

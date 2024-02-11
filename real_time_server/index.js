@@ -24,11 +24,13 @@ async function setupRedis() {
         await redisSubscriber.connect();
 
         await redisSubscriber.subscribe('newBidChannel', (message) => {
+            console.log('newBidChannel', message);
             const bid = JSON.parse(message);
             io.emit('bidUpdate', bid);
         });
 
         await redisSubscriber.subscribe('newMessage', (message) => {
+            console.log('newMessage', message);
             const msg = JSON.parse(message);
             io.emit('newMessage', msg);
         });

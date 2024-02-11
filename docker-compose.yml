@@ -13,6 +13,8 @@ services:
       - keydb-service
     environment:
       - DATABASE_URL=postgresql://int20test:test@130.162.253.235:5432/int20_test
+      - BACKEND_URL=http://backend:3001
+      - REDIS_URL=redis://keydb-service:6379
     restart: unless-stopped
 
   backend:
