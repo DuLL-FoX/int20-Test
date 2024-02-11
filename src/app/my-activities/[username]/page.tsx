@@ -1,23 +1,26 @@
 import { cache } from "react";
 import { db } from "@/lib/db";
-import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { GetUserBids } from "@/app/api/bids/UserBids/UserBids";
 import H1 from "@/components/ui/h1";
 import Link from "next/link";
 import AuctionListItem from "@/components/auction/AuctionListItem";
-import { Auction } from "@prisma/client";
+import { Auction, } from "@prisma/client";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { formatDate, formatMoney } from "@/lib/utils";
 
 const getAuction = cache(async (username: string) => {
   return await db.auction.findMany({
     where: { authorName: username },
-  });
-});
-
-const getLots = cache(async (username: string) => {
-  return await db.auctionLot.findMany({
-    where: { auction: { authorName: username } },
   });
 });
 
@@ -45,9 +48,12 @@ type MyBidsProps = {
   params: { username: string };
 };
 
-export default async function MyActivity({ params: { username } }: MyBidsProps) {
+export default async function MyActivity({
+  params: { username },
+}: MyBidsProps) {
   const bids = await GetUserBids(username);
   const auction = await getAuction(username);
+
   return (
     <main className="flex flex-col px-4 w-full max-w-7xl my-10 space-y-10 md:items-center">
       {auction.length === 0 && (
@@ -73,12 +79,32 @@ export default async function MyActivity({ params: { username } }: MyBidsProps) 
           </Button>
         </div>
       )}
-      {bids.map((bid) => (
-        <div>
-          <p>{bid.userId}</p>
-          <p>{bid.bidAmount}</p>
-        </div>
-      ))}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Час</TableHead>
+            <TableHead>Ставка</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {bids.map((bid, index) => (
+            <TableRow key={index}>
+              <TableCell className="font-semibold">
+                {formatDate(bid.createdAt)}
+              </TableCell>
+              <TableCell className="font-semibold">
+                {formatMoney(bid.bidAmount)}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={3}>Загальна кількість ставок</TableCell>
+            <TableCell>{bids.length}</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
     </main>
   );
 }

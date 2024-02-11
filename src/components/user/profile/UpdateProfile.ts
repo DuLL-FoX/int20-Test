@@ -24,11 +24,9 @@ export async function UpdateProfile(formData: FormData, username: string) {
         },
       });
     } else {
-      await db.$transaction(async (prisma) => {
-        await prisma.user.update({
-          where: { username: username },
-          data: { username: trimmedUsername, password: trimmedPassword },
-        });
+      await db.user.update({
+        where: { username: username },
+        data: { username: trimmedUsername, password: trimmedPassword },
       });
     }
   } catch (error) {

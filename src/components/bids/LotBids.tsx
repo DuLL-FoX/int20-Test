@@ -1,51 +1,84 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  initSocketConnection,
+  connectSocket,
+  disconnectSocket,
+  subscribeToBidUpdates,
+  unsubscribeFromBidUpdates,
+} from "@/lib/socketClient";
 import { useUser } from "@/contexts/UserContext";
-import Cookies from "js-cookie";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { formatDate, formatMoney } from "@/lib/utils";
 
 export default function LotBids({ id }: { id: number }) {
   const [bids, setBids] = useState<any[]>([]);
-
-  const [selectedUser] = useState<string | null>(null);
-  const { setSelectedUser } = useUser();
+  const { selectedUser, setSelectedUser } = useUser();
+  const hasSubscribedToBidsRef = useRef(false);
 
   useEffect(() => {
-    const socket = io("http://localhost:3001");
-
-    const storedSelectedUser = Cookies.get("selectedUser");
-    if (storedSelectedUser) setSelectedUser(storedSelectedUser);
+    initSocketConnection();
+    connectSocket();
 
     fetch(`/api/bids?lotId=${id}`)
       .then((response) => response.json())
-      .then((data) => setBids(data));
+      .then((data) => setBids(data))
+      .catch((error) => console.error("Failed to load bids:", error));
 
-    socket.on("disconnect", () => {
-      console.log("Disconnected from the server");
-    });
+    if (!hasSubscribedToBidsRef.current) {
+      const handleNewBid = (newBid: any) => {
+        console.log(`New bid:`, newBid);
+        setBids((prevBids) => [...prevBids, newBid]);
+      };
 
-    socket.on("bidUpdate", (newBid) => {
-      console.log(newBid);
-      setBids((prevBids) => [...prevBids, newBid]);
-    });
+      subscribeToBidUpdates(handleNewBid);
+      hasSubscribedToBidsRef.current = true;
+    }
 
-    // Clean up the effect
     return () => {
-      socket.disconnect();
+      if (hasSubscribedToBidsRef.current) {
+        unsubscribeFromBidUpdates();
+        hasSubscribedToBidsRef.current = false;
+      }
+      disconnectSocket();
     };
-  }, [selectedUser]);
+  }, [id, selectedUser]);
 
   return (
-    <div>
-      <h1>TestBids</h1>
-      <ul>
+    <Table>
+      <TableCaption>Список всіх ставок на даних лот</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Користувач</TableHead>
+          <TableHead>Час</TableHead>
+          <TableHead >Ставка</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
         {bids.map((bid, index) => (
-          <li key={index}>
-            <p> {JSON.stringify(bid)}</p>
-          </li>
+          <TableRow key={index}>
+            <TableCell className="font-medium">{bid.user.username}</TableCell>
+            <TableCell>{formatDate(bid.createdAt)}</TableCell>
+            <TableCell>{formatMoney(bid.bidAmount)}</TableCell>
+          </TableRow>
         ))}
-      </ul>
-    </div>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={3}>Кількість ставок</TableCell>
+          <TableCell >{bids.length}</TableCell>
+        </TableRow>
+      </TableFooter>
+    </Table>
   );
 }

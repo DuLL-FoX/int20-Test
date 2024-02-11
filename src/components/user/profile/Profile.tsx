@@ -77,7 +77,7 @@ export default function UserProfile({ children }: UserProfileProps) {
       <PopoverTrigger asChild className="cursor-pointer">
         {children}
       </PopoverTrigger>
-      <PopoverContent className="w-full">
+      <PopoverContent className="w-60">
         <Form {...form}>
           <form
             className="space-y-4"
