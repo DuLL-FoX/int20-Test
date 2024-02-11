@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Auction } from "@prisma/client";
+import {Button} from "@/components/ui/button";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import AuctionFilterSidebar from "@/components/auction/AuctionsFilterSidebar";
-import { AuctionFilterValues } from "@/lib/Auction/validation";
-import { Metadata } from "next";
+import {AuctionFilterValues} from "@/lib/Auction/validation";
+import {Metadata} from "next";
 import AuctionResult from "@/components/auction/AuctionResult";
 
 
