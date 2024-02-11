@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
     initSocketConnection,
     connectSocket,
@@ -13,7 +13,7 @@ import { useUser } from '@/contexts/UserContext';
 interface ChatMessage {
     id: number;
     messageText: string;
-    auctionId: number;
+    auctionSlug: string;
     userId: number;
     chatId: number;
 }
