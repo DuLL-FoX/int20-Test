@@ -10,6 +10,8 @@ import {
 } from "@/lib/socketClient";
 import { useUser } from "@/contexts/UserContext";
 import { Input } from "../ui/input";
+import Cookies from "js-cookie";
+
 
 interface ChatMessage {
   id: number;
@@ -36,6 +38,7 @@ export default function Chat({ auctionSlug }: ChatProps) {
 
   useEffect(() => {
     let isMounted = true;
+    Cookies.set("auctionSlug", auctionSlug);
 
     const initChat = async () => {
       if (!isMounted && hasSubscribedRef.current) return;

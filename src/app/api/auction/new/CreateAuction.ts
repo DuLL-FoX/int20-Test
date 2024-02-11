@@ -52,12 +52,12 @@ export async function CreateAuctionPosting(formData: FormData) {
         },
       });
 
-      const user = await prisma.user.findUnique({
+     await prisma.user.findUnique({
         where: { username },
         select: { username: true },
       });
 
-      const auction = await prisma.auction.create({
+      await prisma.auction.create({
         data: {
           slug,
           title: trimmedTitle,

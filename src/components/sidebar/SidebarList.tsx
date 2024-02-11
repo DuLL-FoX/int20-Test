@@ -93,7 +93,7 @@ export default function SidebarList({
           </Link>
         ))}
         <Link
-          href={`/my-bids/${selectedUser}`}
+          href={`/my-activities/${selectedUser}`}
           className={`relative flex justify-center items-center 
           py-2 px-3 my-1 font-medium 
         rounded-md cursor-pointer transition-colors group

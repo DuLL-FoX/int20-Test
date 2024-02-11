@@ -38,13 +38,6 @@ const getContact = cache(async (contactPhone: string) => {
   return contact;
 });
 
-const getChat = cache(async (slug: string) => {
-  return await fetch(`http://localhost:3000/api/chat?auctionSlug=${slug}`, {
-    method: "GET",
-    cache: "no-store",
-  }).then((data) => data.json());
-});
-
 export async function generateStaticParams() {
   const auctions = await db.auction.findMany({
     where: { status: "ACTIVE" },
@@ -68,7 +61,6 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
   const auction = await getAuction(slug);
   const lots = await getLots(slug);
   const contact = await getContact(auction.contactPhone as string);
-  const chat = await getChat(slug);
   const { contactEmail } = contact;
   const applicationLink = contactEmail && `mailto:${contactEmail}`;
 
