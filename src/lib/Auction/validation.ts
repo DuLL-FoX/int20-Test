@@ -14,8 +14,7 @@ const auctionLogoSchema = z
 
 export const createAuctionSchema = z.object({
   title: requiredString.max(100),
-  authorName: requiredString.max(30),
-  contactPointContactName: requiredString,
+  contactPhone: requiredString,
   auctionLotLogo: auctionLogoSchema,
   briefDescription: z.string().max(5000),
   auctionDate: z.coerce.date(),

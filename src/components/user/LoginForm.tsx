@@ -2,19 +2,18 @@
 
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useUser } from '@/contexts/UserContext';
+import { useUser } from "@/contexts/UserContext";
 
 export default function LoginForm() {
   const [username, setUsername] = useState<string>("");
@@ -22,15 +21,14 @@ export default function LoginForm() {
   const [users, setUsers] = useState<string[]>([]);
   const [selectedUser] = useState<string | null>(null);
   const { setSelectedUser } = useUser();
-
-  const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const storedUsers = Cookies.get("users");
     const storedSelectedUser = Cookies.get("selectedUser");
     if (storedUsers) setUsers(JSON.parse(storedUsers));
     if (storedSelectedUser) setSelectedUser(storedSelectedUser);
-  }, []);
+  }, [selectedUser]);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -38,6 +36,7 @@ export default function LoginForm() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -56,7 +55,6 @@ export default function LoginForm() {
 
     setSelectedUser(user.username);
     Cookies.set("selectedUser", user.username, { expires: 7 });
-    router.back();
   }
 
   async function handleSelectUser(username: string) {
@@ -65,7 +63,7 @@ export default function LoginForm() {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Увійти</Button>
       </DialogTrigger>
@@ -121,9 +119,11 @@ export default function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <Button type="submit" variant="outline" className="w-full">
-            Увійти чи створити користувача
-          </Button>
+          <DialogClose>
+            <Button type="submit" variant="outline" className="w-full">
+              Увійти чи створити користувача
+            </Button>
+          </DialogClose>
         </form>
       </DialogContent>
     </Dialog>

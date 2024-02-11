@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
-import Cookies from "js-cookie";
 import { GetUserBids } from "@/app/api/bids/UserBids/UserBids";
 import H1 from "@/components/ui/h1";
 import Link from "next/link";

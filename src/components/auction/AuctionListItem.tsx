@@ -23,6 +23,7 @@ export default function AuctionListItem({
     <article className="flex md:min-h-full gap-3 rounded-xl border p-4 hover:bg-muted/60">
       <Image
         src={auctionLotLogoUrl || logoPlaceholder}
+        priority={false}
         alt={`${title} logo`}
         className="rounded-lg self-center bg-slate-50"
         height={100}

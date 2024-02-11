@@ -1,6 +1,7 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "linux-arm64-openssl-3.0.x"]
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -20,22 +21,22 @@ model User {
 }
 
 model Auction {
-  id                      Int           @id @default(autoincrement())
-  slug                    String        @unique
-  title                   String
-  briefDescription        String
-  createdAt               DateTime      @default(now())
-  updatedAt               DateTime      @updatedAt
-  auctionDate             DateTime
-  auctionLotLogoUrl       String        @default("")
-  status                  AuctionStatus @default(ACTIVE)
-  authorName              String        @unique
-  author                  User          @relation(fields: [authorName], references: [username])
-  auctionLots             AuctionLot[]
-  chatId                  Int
-  contactPointContactName String
-  chat                    ChatSession   @relation(fields: [chatId], references: [id])
-  contactPoint            ContactPoint  @relation(fields: [contactPointContactName], references: [contactName])
+  id                Int           @id @default(autoincrement())
+  slug              String        @unique
+  title             String
+  briefDescription  String
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  auctionDate       DateTime
+  auctionLotLogoUrl String        @default("")
+  status            AuctionStatus @default(ACTIVE)
+  authorName        String        @unique
+  author            User          @relation(fields: [authorName], references: [username])
+  auctionLots       AuctionLot[]
+  chatId            Int?
+  contactPhone      String?
+  chat              ChatSession?
+  contactPoint      ContactPoint? @relation(fields: [contactPhone], references: [contactPhone])
 
   @@map("auctions")
 }
@@ -72,7 +73,7 @@ enum AuctionLotStatus {
 
 model ContactPoint {
   contactName  String    @id
-  contactPhone String
+  contactPhone String    @unique
   contactEmail String?
   Auction      Auction[]
 
@@ -93,11 +94,11 @@ model AuctionBid {
 }
 
 model ChatSession {
-  id        Int       @id @default(autoincrement())
-  auctionId Int
-  message   Message[]
-  createdAt DateTime  @default(now())
-  Auction   Auction[]
+  id          Int       @id @default(autoincrement())
+  auctionSlug String    @unique
+  message     Message[]
+  createdAt   DateTime  @default(now())
+  auction     Auction   @relation(fields: [auctionSlug], references: [slug])
 
   @@map("chat_session")
 }

@@ -11,11 +11,8 @@ import { useEffect, useState } from "react";
 import { ThemeButton } from "@/components/theme/ThemeButton";
 import { useTheme } from "next-themes";
 import Cookies from "js-cookie";
-import { Button } from "../ui/button";
 import dynamic from "next/dynamic";
 import UserProfile from "../user/profile/Profile";
-import Link from "next/link";
-import {useUser} from "@/contexts/UserContext";
 
 const sidebarItems = [
   {
@@ -51,7 +48,7 @@ const SidebarList = dynamic(() => import("./SidebarList"), {
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const { theme } = useTheme();
-  const { selectedUser, setSelectedUser } = useUser();
+  const [selectedUser, setSelectedUser] = useState<string | null>();
 
   useEffect(() => {
     const storedSelectedUser = Cookies.get("selectedUser");
@@ -60,7 +57,7 @@ export default function Sidebar() {
     }
 
     localStorage.setItem("theme", theme as string);
-  }, [theme]);
+  }, [theme, selectedUser]);
 
   return (
     <aside className="h-screen">
@@ -74,8 +71,8 @@ export default function Sidebar() {
           expanded={expanded}
           theme={theme}
           setExpanded={setExpanded}
+          selectedUser={selectedUser as string}
         />
-        <Link href={`/my-bids/${selectedUser}`}>Ваші ставки</Link>
         <div className="flex justify-between m-2 space-x-2">
           <span
             className={`flex items-center w-full justify-center  ${
