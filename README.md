@@ -84,11 +84,13 @@ DATABASE_URL=postgresql://postgres:password@postgres:5432/int20?schema=public
 - **Auction Management**: Enables the seamless creation and real-time monitoring of auctions.
 - **Bidding System**: Supports live bids and updates for interactive auction participation.
 - **Interaction**: Includes chat functionality and bid history for enhanced engagement.
+- **Basic search functionality**: Allows users to search for auctions by name.
+- **Basic Authentication**: Provides user registration and login functionality.
 
 ### Advanced Functionalities
 
 - **Live Bidding**: Implements web sockets for immediate notification and update delivery.
-- **Real-Time Updates**: Ensures instant reflection of auction status, chat, and bid modifications.
+- **Real-Time Updates**: Ensures instant reflection of auction status, chat modifications.
 
 ## Additional Notes
 

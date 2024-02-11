@@ -1,15 +1,8 @@
 "use client";
-import {
-  MoreVertical,
-  Settings,
-  Home,
-  Activity,
-  PhoneCall,
-  SquareUserRound,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { ThemeButton } from "@/components/theme/ThemeButton";
-import { useTheme } from "next-themes";
+import {Activity, Home, MoreVertical, SquareUserRound,} from "lucide-react";
+import {useEffect, useState} from "react";
+import {ThemeButton} from "@/components/theme/ThemeButton";
+import {useTheme} from "next-themes";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import UserProfile from "../user/profile/Profile";
@@ -38,7 +31,7 @@ export default function Sidebar() {
   const { theme } = useTheme();
   const [selectedUser, setSelectedUser] = useState<string | null>();
 
-  
+
   useEffect(() => {
     const storedSelectedUser = Cookies.get("selectedUser");
     if (storedSelectedUser) {
