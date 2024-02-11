@@ -3,16 +3,10 @@ import { Auction } from "@prisma/client";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import AuctionFilterSidebar from "@/components/auction/AuctionsFilterSidebar";
-import {
-  AuctionFilterValues,
-  auctionFilterSchema,
-} from "@/lib/Auction/validation";
+import { AuctionFilterValues } from "@/lib/Auction/validation";
 import { Metadata } from "next";
 import AuctionResult from "@/components/auction/AuctionResult";
 
-const AuctionListItem = dynamic(
-  () => import("@/components/auction/AuctionListItem")
-);
 
 type PageProps = {
   searchParams: {
@@ -37,7 +31,6 @@ export const generateMetadata = ({
 };
 
 export default async function Auction({ searchParams: { q } }: PageProps) {
-
   const filterValues: AuctionFilterValues = {
     q,
   };
@@ -47,7 +40,7 @@ export default async function Auction({ searchParams: { q } }: PageProps) {
       <Link href={"/auctions/new"}>
         <Button>Створити новий аукціон</Button>
       </Link>
-      <section className="flex flex-col lg:flex-row gap-3">
+      <section className="flex 2xl:flex-row flex-col gap-3">
         <AuctionFilterSidebar defaultValues={filterValues} />
         <AuctionResult filterValues={filterValues} />
       </section>

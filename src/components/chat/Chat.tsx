@@ -11,7 +11,7 @@ import {
 import { useUser } from "@/contexts/UserContext";
 import { Input } from "../ui/input";
 import Cookies from "js-cookie";
-
+import { Button } from "../ui/button";
 
 interface ChatMessage {
   id: number;
@@ -19,6 +19,7 @@ interface ChatMessage {
   auctionSlug: string;
   userId: number;
   chatId: number;
+  username: string;
 }
 
 interface ChatProps {
@@ -29,6 +30,7 @@ export default function Chat({ auctionSlug }: ChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState<string>("");
   const { selectedUser } = useUser();
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const addMessage = useCallback((newMessage: ChatMessage) => {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -76,6 +78,13 @@ export default function Chat({ auctionSlug }: ChatProps) {
     };
   }, [auctionSlug, addMessage]);
 
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   const handleSend = async () => {
     if (input.trim()) {
       const queryString = `?username=${selectedUser}&auctionSlug=${auctionSlug}`;
@@ -96,11 +105,19 @@ export default function Chat({ auctionSlug }: ChatProps) {
   };
 
   return (
-    <div className="flex flex-col max-w-3xl max-h-60 space-y-3">
-      <div className="flex flex-col justify-start align-bottom border h-32 overflow-auto rounded-md">
+    <div className="flex flex-col w-60 max-h-80 space-y-3">
+      <div
+        ref={chatContainerRef}
+        className="flex flex-col bottom-0 mt-auto justify-start align-bottom border h-60 overflow-auto overflow-y-scroll scroll-smooth rounded-md"
+      >
         {messages.map((message) => (
-          <p key={message.id}>{`${selectedUser}: ${message.messageText}`}</p>
+          <p
+            key={message.id}
+          >{`${message.username}: ${message.messageText}`}</p>
         ))}
+        {messages.length === 0 && (
+          <p>Тут відображатимуться повідомлення до аукціону</p>
+        )}
       </div>
       <Input
         className="rounded-md w-full"
@@ -108,7 +125,7 @@ export default function Chat({ auctionSlug }: ChatProps) {
         value={input}
         onChange={handleInputChange}
       />
-      <button onClick={handleSend}>Send</button>
+      <Button onClick={handleSend}>Відправити</Button>
     </div>
   );
 }

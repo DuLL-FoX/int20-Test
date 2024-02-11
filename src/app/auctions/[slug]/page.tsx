@@ -70,10 +70,10 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
   }
 
   return (
-    <main className="flex flex-col px-4 w-full max-w-7xl my-10 space-y-10 md:items-center">
-      <div className="flex flex-col m-auto md:flex-row items-center gap-5 md:items-start">
+    <main className="flex flex-col px-4 w-full lg:max-w-7xl max-lg:max-w-3xl my-10 space-y-10 md:items-center">
+      <div className="flex flex-col m-auto lg:flex-row items-center gap-5 md:items-start">
         <AuctionDetailsPage auction={auction} contact={contact} />
-        <aside className="flex flex-col items-center space-y-5 border-l p-3 h-full">
+        <aside className="flex flex-col items-center space-y-5 lg:border-l max-lg:border-y w-full p-3 h-full">
           <div className="flex flex-col items-center">
             <Button asChild>
               <a href={applicationLink} className="w-40 md:w-fit">
@@ -93,8 +93,10 @@ export default async function AuctionDetails({ params: { slug } }: PageProps) {
                 : "Відмінено"}
             </p>
           </div>
-          <Chat auctionSlug={slug}/>
         </aside>
+        <div className="flex">
+          <Chat auctionSlug={slug} />
+        </div>
       </div>
       <LotList lots={lots} slug={slug} />
     </main>

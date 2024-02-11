@@ -27,12 +27,6 @@ const sidebarItems = [
     alert: true,
     link: "/auctions",
   },
-  {
-    icon: <PhoneCall size={20} />,
-    label: "Контакти",
-    alert: false,
-    link: "/contacts",
-  },
 ];
 
 const SidebarList = dynamic(() => import("./SidebarList"), {
@@ -40,10 +34,11 @@ const SidebarList = dynamic(() => import("./SidebarList"), {
 });
 
 export default function Sidebar() {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const { theme } = useTheme();
   const [selectedUser, setSelectedUser] = useState<string | null>();
 
+  
   useEffect(() => {
     const storedSelectedUser = Cookies.get("selectedUser");
     if (storedSelectedUser) {
@@ -52,6 +47,23 @@ export default function Sidebar() {
 
     localStorage.setItem("theme", theme as string);
   }, [theme, selectedUser]);
+
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    setExpanded(mediaQuery.matches);
+
+    const handleMediaQueryChange = (e: MediaQueryListEvent) => {
+      setExpanded(e.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    };
+  }, []);
+
 
   return (
     <aside className="h-full">

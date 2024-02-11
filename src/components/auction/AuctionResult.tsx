@@ -2,7 +2,6 @@ import { Prisma } from "@prisma/client";
 import { AuctionFilterValues } from "@/lib/Auction/validation";
 import { db } from "@/lib/db";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 
 type AuctionResultsProps = {
   filterValues: AuctionFilterValues;
@@ -37,7 +36,7 @@ export default async function AuctionResults({
   });
 
   return (
-    <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1 place-content-start">
+    <div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1 place-content-start">
       {auctions.map((auction) => (
         <Link
           key={auction.id}

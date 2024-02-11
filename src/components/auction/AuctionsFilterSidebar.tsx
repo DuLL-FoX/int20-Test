@@ -1,7 +1,5 @@
-import { statusAuc } from "@/lib/auction-types";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import Select from "../ui/select";
 import {
   AuctionFilterValues,
   auctionFilterSchema,
@@ -31,7 +29,7 @@ export default async function AuctionFilterSidebar({
   defaultValues,
 }: AuctionFilterSidebarProps) {
   return (
-    <aside className="lg:w-[300px] sticky top-0 bg-background border rounded-lg h-fit p-4">
+    <aside className="2xl:w-[300px] sticky top-0 bg-background border rounded-lg h-fit p-4">
       <form action={filterAuctions} key={JSON.stringify(defaultValues)}>
         <div className="space-y-4">
           <div className="flex flex-col gap-2">

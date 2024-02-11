@@ -17,7 +17,7 @@ export default function LotList({ lots, slug }: LotListProps) {
           Додати лоти для даного аукціону
         </Link>
       </Button>
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-3 border-t w-full pt-3">
+      <div className="grid 2xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-1 gap-3 border-t w-full pt-3">
         {lots.map((lot, key) => {
           return (
             <div key={key}>
