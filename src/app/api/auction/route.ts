@@ -1,32 +1,38 @@
 import {db} from "@/lib/db";
 import {NextRequest, NextResponse} from "next/server";
 import {respondWithError, respondWithSuccess} from "@/lib/respond";
+import type {Auction} from "@prisma/client";
+
+interface User {
+    username: string;
+}
+
+async function findUserByUsername(username: string): Promise<User | null> {
+    return db.user.findUnique({
+        where: {username},
+        select: {password: false, username: true},
+    });
+}
+
+async function findAuctions(condition: object): Promise<Auction[]> {
+    return db.auction.findMany({
+        where: condition,
+        orderBy: {createdAt: "desc"},
+    });
+}
 
 export async function GET(req: NextRequest) {
     const usernameParam = req.nextUrl.searchParams.get("username");
 
     try {
         if (usernameParam) {
-            const user = await db.user.findUnique({
-                where: {username: usernameParam},
-                select: {password: false, username: true},
-            });
+            const user = await findUserByUsername(usernameParam);
+            if (!user) return respondWithError("User not found.", 404);
 
-            if (!user) {
-                return respondWithError("User not found.", 404)
-            }
-
-            const userAuctions = await db.auction.findMany({
-                where: {authorName: user.username},
-                orderBy: {createdAt: "desc"},
-            });
-
+            const userAuctions = await findAuctions({authorName: user.username});
             return respondWithSuccess(userAuctions, 200);
         } else {
-            const auctions = await db.auction.findMany({
-                where: {status: "ACTIVE"},
-                orderBy: {createdAt: "desc"},
-            });
+            const auctions = await findAuctions({status: "ACTIVE"});
             return respondWithSuccess(auctions, 200);
         }
     } catch (err) {
@@ -35,46 +41,54 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-    const auctionId = req.nextUrl.searchParams.get("id");
+    const auctionIdParam = req.nextUrl.searchParams.get("id");
+    const usernameParam = req.nextUrl.searchParams.get("username");
+    const auctionId = Number(auctionIdParam);
 
-    const existingAuction = await db.auction.findUnique({where: {id: Number(auctionId)}});
+    if (!usernameParam) {
+        return respondWithError("Invalid username value.", 400);
+    }
+
+    const user = await findUserByUsername(usernameParam);
+    if (!user) {
+        return respondWithError("User not found.", 404);
+    }
+
+    const userAuctions = await findAuctions({authorName: user.username});
+    const userAuctionIds = userAuctions.map((auction) => auction.id);
+    if (!userAuctionIds.includes(auctionId)) {
+        return respondWithError("User is not the author of the auction.", 403);
+    }
+
+    if (!auctionIdParam || isNaN(auctionId)) {
+        return respondWithError("Invalid auctionId value.", 400);
+    }
+
+    const existingAuction = await db.auction.findUnique({where: {id: auctionId}});
     if (!existingAuction) {
-        return respondWithError("Auction not found.", 404)
+        return respondWithError("Auction not found.", 404);
     }
 
-    const {title, description, auctionDate, lotLogo} = await req.json();
+    const updateData = await req.json();
+    const updateFields: Partial<Auction> = {};
 
-    if (!auctionId || !title || !description || !auctionDate || !lotLogo) {
-        return respondWithError("Invalid request body.", 400)
-    }
+    if (updateData.title) updateFields.title = updateData.title;
+    if (updateData.description) updateFields.briefDescription = updateData.description;
+    if (updateData.auctionDate && !isNaN(Date.parse(updateData.auctionDate))) updateFields.auctionDate = new Date(updateData.auctionDate);
+    if (updateData.lotLogo && updateData.lotLogo.startsWith("http")) updateFields.auctionLotLogoUrl = updateData.lotLogo;
 
-    if (isNaN(Date.parse(auctionDate))) {
-        return respondWithError("Invalid auctionDate value.", 400)
-    }
-
-    if (!lotLogo.startsWith("http")) {
-        return respondWithError("Invalid lotLogo value.", 400)
-    }
-
-    if (isNaN(Number(auctionId))) {
-        return respondWithError("Invalid auctionId value.", 400)
+    if (Object.keys(updateFields).length === 0) {
+        return respondWithError("No valid fields provided for update.", 400);
     }
 
     try {
         const updatedAuction = await db.auction.update({
-            where: {id: Number(auctionId)},
-            data: {
-                title: title,
-                briefDescription: description,
-                auctionDate: new Date(auctionDate),
-                auctionLotLogoUrl: lotLogo,
-            },
+            where: {id: auctionId},
+            data: updateFields,
         });
 
         return respondWithSuccess(updatedAuction, 200);
     } catch (err) {
-        return NextResponse.json({error: "An error occurred while processing your request."}, {status: 500});
+        return respondWithError("An error occurred while processing your request.", 500);
     }
-
 }
-
